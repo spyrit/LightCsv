@@ -1,0 +1,21 @@
+{
+    "name": "spyrit/csv",
+    "description": "Spyrit Csv reader and writer library",
+    "type": "library",
+    "keywords": ["csv", "import", "export"],
+    "authors": [
+        {
+            "name": "Charles SANQUER",
+            "email": "charles.sanquer@spyrit.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-0": { "Spyrit": "src/" }
+    }
+}
