@@ -6,7 +6,7 @@ use Spyrit\Csv\AbstractCsv;
 use Spyrit\Csv\Utility\Converter;
 
 /**
- * Description of Csv Reader
+ * Csv Reader
  *
  * @author Charles SANQUER - Spyrit Systemes <charles.sanquer@spyrit.net>
  */
@@ -22,9 +22,11 @@ class CsvReader extends AbstractCsv implements \Iterator
 
     /**
      *
+     * Default Excel Reading configuration
+     *
      * @param string $delimiter default = ;
      * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252
+     * @param string $encoding  default = CP1252 (csv rows will be converted from this encoding)
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
      */
@@ -62,7 +64,7 @@ class CsvReader extends AbstractCsv implements \Iterator
         return $result;
     }
 
-    // iterator methods
+    // iterator methods for reading CSV
     public function current()
     {
         return $this->currentValues;

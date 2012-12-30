@@ -15,19 +15,34 @@ class CsvWriter extends AbstractCsv
     protected $useBom = false;
 
     /**
+     * Default Excel Writing configuration
      *
      * @param string $delimiter default = ;
      * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252
+     * @param string $encoding  default = CP1252 (date write to the csv will be converted to this encoding from UTF-8)
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
-     * @param bool   $useBom    default = false
+     * @param bool   $useBom    default = false (BOM will be writed when opening the file)
      */
     public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false)
     {
         parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape);
         $this->fileHandlerMode = 'wb';
         $this->setUseBom($useBom);
+    }
+
+    /**
+     * open a csv file to write
+     *
+     * @param  string                  $filename default = null
+     * @return \Spyrit\Csv\AbstractCsv
+     */
+    public function open($filename = null)
+    {
+        parent::open($filename);
+        $this->writeBom();
+
+        return $this;
     }
 
     /**
@@ -41,7 +56,7 @@ class CsvWriter extends AbstractCsv
 
     /**
      *
-     * @param bool $useBom
+     * @param bool $useBom (BOM will be writed when opening the file)
      *
      * @return \Spyrit\Csv\CsvWriter
      */
@@ -57,7 +72,7 @@ class CsvWriter extends AbstractCsv
      *
      * @return \Spyrit\Csv\CsvWriter
      */
-    public function writeBom()
+    protected function writeBom()
     {
         if ($this->useBom && $this->encoding == 'UTF-8') {
             // Write the UTF-8 BOM code
@@ -69,6 +84,7 @@ class CsvWriter extends AbstractCsv
 
 
     /**
+     * get HTTP headers for streaming CSV file
      *
      * @param  string $filename
      * @return array
@@ -83,7 +99,7 @@ class CsvWriter extends AbstractCsv
 
     // @codeCoverageIgnoreStart
     /**
-     * echo headers for CSV
+     * echo HTTP headers for streaming CSV file
      *
      * @param string $filename
      */
@@ -107,7 +123,7 @@ class CsvWriter extends AbstractCsv
      *
      * @throws \InvalidArgumentException
      */
-    protected function writeLine($fileHandler, $values)
+    protected function write($fileHandler, $values)
     {
         $line = '';
 
@@ -141,30 +157,32 @@ class CsvWriter extends AbstractCsv
     }
 
     /**
+     * write a CSV row from a PHP array
      *
      * @param array $values
      *
      * @return \Spyrit\Csv\CsvWriter
      */
-    public function addLine(array $values)
+    public function writeRow(array $values)
     {
         if (!$this->isFileOpened()) {
             $this->openFile($this->fileHandlerMode);
         }
 
-        return $this->writeLine($this->getFileHandler(), $values);
+        return $this->write($this->getFileHandler(), $values);
     }
 
     /**
+     * write CSV rows from a PHP arrays
      *
-     * @param array $lines
+     * @param array rows
      *
      * @return \Spyrit\Csv\CsvWriter
      */
-    public function addLines(array $lines)
+    public function writeRows(array $rows)
     {
-        foreach ($lines as $values) {
-            $this->addLine($values);
+        foreach ($rows as $values) {
+            $this->writeRow($values);
         }
 
         return $this;

@@ -68,7 +68,7 @@ class CsvReaderTest extends AbstractCsvTestCase
                 array(',','"', 'UTF-8', "\n"),
                 __DIR__.'/../Fixtures/test1.csv',
                 array(
-                    array('nom','prenom','age'),
+                    array('nom','prénom','age'),
                     array('Martin','Durand','28'),
                     array('Alain','Richard','36'),
                 )

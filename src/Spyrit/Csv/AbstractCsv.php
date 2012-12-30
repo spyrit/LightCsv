@@ -3,7 +3,7 @@
 namespace Spyrit\Csv;
 
 /**
- * Abstract Csv
+ * Common Abstract Csv
  *
  * @author Charles SANQUER - Spyrit Systemes <charles.sanquer@spyrit.net>
  */
@@ -58,6 +58,8 @@ abstract class AbstractCsv
     protected $fileHandler;
 
     /**
+     *
+     * Default Excel configuration
      *
      * @param string $delimiter default = ;
      * @param string $enclosure default = "
@@ -285,6 +287,7 @@ abstract class AbstractCsv
     }
 
     /**
+     * open a csv file to read or write
      *
      * @param  string                  $filename default = null
      * @return \Spyrit\Csv\AbstractCsv
@@ -301,6 +304,7 @@ abstract class AbstractCsv
     }
 
     /**
+     * close the current csv file
      *
      * @return \Spyrit\Csv\AbstractCsv
      */
