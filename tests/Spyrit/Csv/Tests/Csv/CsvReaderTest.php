@@ -73,6 +73,16 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Alain','Richard','36'),
                 )
             ),
+            array(
+                array(';','"', 'CP1252', "\n"),
+                __DIR__.'/../Fixtures/test2.csv',
+                array(
+                    array('nom','prénom','age'),
+                    array('Bousquet', 'Inès' ,'32'),
+                    array('Morel','Monique','41'),
+                    array('Gauthier','Aurélie','24'),
+                )
+            ),
         );
     }
 }
