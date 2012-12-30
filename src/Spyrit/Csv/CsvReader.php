@@ -18,6 +18,10 @@ class CsvReader extends AbstractCsv implements \Iterator
      */
     private $position = 0;
 
+    /**
+     *
+     * @var array
+     */
     private $currentValues = array();
 
     /**

@@ -12,6 +12,10 @@ use Spyrit\Csv\Utility\Converter;
  */
 class CsvWriter extends AbstractCsv
 {
+    /**
+     *
+     * @var bool
+     */
     protected $useBom = false;
 
     /**

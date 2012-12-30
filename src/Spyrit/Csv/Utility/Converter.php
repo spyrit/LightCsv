@@ -93,6 +93,7 @@ class Converter
     }
     // @codeCoverageIgnoreEnd
 
+    // @codeCoverageIgnoreStart
     /**
      * Convert string from one encoding to another. First try iconv, then mbstring, or no convertion
      *
@@ -125,7 +126,9 @@ class Converter
 
         return $value;
     }
+    // @codeCoverageIgnoreEnd
 
+    // @codeCoverageIgnoreStart
     /**
      * Decode UTF-16 encoded strings.
      *
@@ -168,5 +171,5 @@ class Converter
 
         return $newstr;
     }
-
+    // @codeCoverageIgnoreEnd
 }

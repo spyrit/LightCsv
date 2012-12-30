@@ -64,6 +64,12 @@ class CsvWriterTest extends AbstractCsvTestCase
                 array('Martin','Durand','28'),
                 '"Martin","Durand","28"'."\n",
             ),
+            array(
+                array(';','"', 'CP1252', "r\n"),
+                __DIR__.'/../Fixtures/testWrite2.csv',
+                array('Gauthier','Aurélie','24'),
+                mb_convert_encoding('"Gauthier";"Aurélie";"24"'."\r\n", 'CP1252', 'UTF-8'),
+            ),
         );
     }
 
