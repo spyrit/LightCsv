@@ -1,9 +1,9 @@
 <?php
 
-namespace Spyrit\Csv;
+namespace Spyrit\LightCsv;
 
-use Spyrit\Csv\AbstractCsv;
-use Spyrit\Csv\Utility\Converter;
+use Spyrit\LightCsv\AbstractCsv;
+use Spyrit\LightCsv\Utility\Converter;
 
 /**
  * Csv Writer
@@ -39,7 +39,7 @@ class CsvWriter extends AbstractCsv
      * open a csv file to write
      *
      * @param  string                  $filename default = null
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function open($filename = null)
     {
@@ -62,7 +62,7 @@ class CsvWriter extends AbstractCsv
      *
      * @param bool $useBom (BOM will be writed when opening the file)
      *
-     * @return \Spyrit\Csv\CsvWriter
+     * @return \Spyrit\LightCsv\CsvWriter
      */
     public function setUseBom($useBom)
     {
@@ -74,7 +74,7 @@ class CsvWriter extends AbstractCsv
     /**
      * Write UTF-8 BOM code if encoding is UTF-8 and useBom is set to true
      *
-     * @return \Spyrit\Csv\CsvWriter
+     * @return \Spyrit\LightCsv\CsvWriter
      */
     protected function writeBom()
     {
@@ -123,7 +123,7 @@ class CsvWriter extends AbstractCsv
      * @param resource $fileHandler
      * @param array    $values
      *
-     * @return \Spyrit\Csv\CsvWriter
+     * @return \Spyrit\LightCsv\CsvWriter
      *
      * @throws \InvalidArgumentException
      */
@@ -165,7 +165,7 @@ class CsvWriter extends AbstractCsv
      *
      * @param array $values
      *
-     * @return \Spyrit\Csv\CsvWriter
+     * @return \Spyrit\LightCsv\CsvWriter
      */
     public function writeRow(array $values)
     {
@@ -181,7 +181,7 @@ class CsvWriter extends AbstractCsv
      *
      * @param array rows
      *
-     * @return \Spyrit\Csv\CsvWriter
+     * @return \Spyrit\LightCsv\CsvWriter
      */
     public function writeRows(array $rows)
     {

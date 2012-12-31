@@ -1,9 +1,9 @@
 <?php
 
-namespace Spyrit\Csv;
+namespace Spyrit\LightCsv;
 
-use Spyrit\Csv\AbstractCsv;
-use Spyrit\Csv\Utility\Converter;
+use Spyrit\LightCsv\AbstractCsv;
+use Spyrit\LightCsv\Utility\Converter;
 
 /**
  * Csv Reader

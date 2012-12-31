@@ -1,9 +1,9 @@
 <?php
 
-namespace Spyrit\Csv\Tests\Csv;
+namespace Spyrit\LightCsv\Tests\Csv;
 
-use Spyrit\Csv\Tests\Test\AbstractCsvTestCase;
-use Spyrit\Csv\CsvReader;
+use Spyrit\LightCsv\Tests\Test\AbstractCsvTestCase;
+use Spyrit\LightCsv\CsvReader;
 
 /**
  * CsvReaderTest
@@ -14,7 +14,7 @@ class CsvReaderTest extends AbstractCsvTestCase
 {
     /**
      *
-     * @var \Spyrit\Csv\CsvReader
+     * @var \Spyrit\LightCsv\CsvReader
      */
     protected $reader;
 
@@ -50,7 +50,7 @@ class CsvReaderTest extends AbstractCsvTestCase
     public function testReading($options, $filename, $expected)
     {
         $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3]);
-        $this->assertInstanceOf('Spyrit\Csv\CsvReader',$this->reader->open($filename));
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->open($filename));
 
         $actual = array();
         foreach ($this->reader as $key => $value) {
@@ -58,7 +58,7 @@ class CsvReaderTest extends AbstractCsvTestCase
         }
 
         $this->assertEquals($expected, $actual);
-        $this->assertInstanceOf('Spyrit\Csv\CsvReader',$this->reader->close());
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->close());
     }
 
     public function providerReading()

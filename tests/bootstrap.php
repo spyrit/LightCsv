@@ -11,4 +11,4 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
         'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
         'php composer.phar install'.PHP_EOL.' --dev');
 }
-$loader->add('Spyrit\\Csv\Tests\\', __DIR__);
+$loader->add('Spyrit\\LightCsv\Tests\\', __DIR__);

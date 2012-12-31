@@ -1,6 +1,6 @@
 <?php
 
-namespace Spyrit\Csv;
+namespace Spyrit\LightCsv;
 
 /**
  * Common Abstract Csv
@@ -84,7 +84,7 @@ abstract class AbstractCsv
     /**
      *
      * @param  string                  $filename
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setFilename($filename)
     {
@@ -105,7 +105,7 @@ abstract class AbstractCsv
     /**
      *
      * @param  string                  $eol
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setLineEndings($eol)
     {
@@ -138,7 +138,7 @@ abstract class AbstractCsv
     /**
      *
      * @param  string                  $encoding
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEncoding($encoding)
     {
@@ -150,7 +150,7 @@ abstract class AbstractCsv
     /**
      *
      * @param  string                  $enclosure
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEnclosure($enclosure)
     {
@@ -162,7 +162,7 @@ abstract class AbstractCsv
     /**
      *
      * @param  string                  $escape
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEscape($escape)
     {
@@ -174,7 +174,7 @@ abstract class AbstractCsv
     /**
      *
      * @param  string                  $delimiter
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setDelimiter($delimiter)
     {
@@ -290,7 +290,9 @@ abstract class AbstractCsv
      * open a csv file to read or write
      *
      * @param  string                  $filename default = null
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
+     * 
+     * @throws \InvalidArgumentException
      */
     public function open($filename = null)
     {
@@ -306,7 +308,7 @@ abstract class AbstractCsv
     /**
      * close the current csv file
      *
-     * @return \Spyrit\Csv\AbstractCsv
+     * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function close()
     {

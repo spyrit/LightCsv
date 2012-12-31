@@ -1,8 +1,8 @@
 <?php
 
-namespace Spyrit\Csv\Tests\Test;
+namespace Spyrit\LightCsv\Tests\Test;
 
-use Spyrit\Csv\AbstractCsv;
+use Spyrit\LightCsv\AbstractCsv;
 
 /**
  * AbstractCsvTestCase
@@ -14,7 +14,7 @@ abstract class AbstractCsvTestCase extends \PHPUnit_Framework_TestCase
     /**
      * get fileHandler (non public access) value for unit tests
      *
-     * @param Spyrit\Csv\AbstractCsv
+     * @param Spyrit\LightCsv\AbstractCsv
      *
      * @return mixed
      */
@@ -30,7 +30,7 @@ abstract class AbstractCsvTestCase extends \PHPUnit_Framework_TestCase
     /**
      * get fileHandler mode (non public access) value for unit tests
      *
-     * @param Spyrit\Csv\AbstractCsv
+     * @param Spyrit\LightCsv\AbstractCsv
      *
      * @return mixed
      */

@@ -1,9 +1,9 @@
 <?php
 
-namespace Spyrit\Csv\Tests\Csv;
+namespace Spyrit\LightCsv\Tests\Csv;
 
-use Spyrit\Csv\AbstractCsv;
-use Spyrit\Csv\Tests\Test\AbstractCsvTestCase;
+use Spyrit\LightCsv\AbstractCsv;
+use Spyrit\LightCsv\Tests\Test\AbstractCsvTestCase;
 
 /**
  * AbstractCsvTest
@@ -14,13 +14,13 @@ class AbstractCsvTest extends AbstractCsvTestCase
 {
     /**
      *
-     * @var Spyrit\Csv\AbstractCsv
+     * @var Spyrit\LightCsv\AbstractCsv
      */
     protected $structure;
 
     protected function setUp()
     {
-        $this->structure = $this->getMockForAbstractClass('Spyrit\Csv\AbstractCsv');
+        $this->structure = $this->getMockForAbstractClass('Spyrit\LightCsv\AbstractCsv');
     }
 
     /**
@@ -28,7 +28,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testGetSetLineEndings($input,$expected)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->setLineEndings($input));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->setLineEndings($input));
         $this->assertEquals($expected,$this->structure->getLineEndings());
     }
 
@@ -54,7 +54,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testGetSetDelimiter($input,$expected)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->setDelimiter($input));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->setDelimiter($input));
         $this->assertEquals($expected,$this->structure->getDelimiter());
     }
 
@@ -72,7 +72,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testGetSetEnclosure($input,$expected)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->setEnclosure($input));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->setEnclosure($input));
         $this->assertEquals($expected,$this->structure->getEnclosure());
     }
 
@@ -90,7 +90,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testGetSetEscape($input,$expected)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->setEscape($input));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->setEscape($input));
         $this->assertEquals($expected,$this->structure->getEscape());
     }
 
@@ -108,7 +108,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testGetSetEncoding($input,$expected)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->setEncoding($input));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->setEncoding($input));
         $this->assertEquals($expected,$this->structure->getEncoding());
     }
 
@@ -126,7 +126,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testGetSetFilename($input,$expected)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->setFilename($input));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->setFilename($input));
         $this->assertEquals($expected,$this->structure->getFilename());
     }
 
@@ -141,7 +141,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
 
     public function testOpen()
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->open(__DIR__.'/../Fixtures/test1.csv'));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->open(__DIR__.'/../Fixtures/test1.csv'));
         $this->assertInternalType('resource', $this->getFileHandlerValue($this->structure));
 
         return $this->structure;
@@ -152,7 +152,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testOpenNoFilename()
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->open());
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->open());
     }
 
     /**
@@ -160,7 +160,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testOpenNoExistingFile()
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$this->structure->open(__DIR__.'/../Fixtures/abc.csv'));
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->structure->open(__DIR__.'/../Fixtures/abc.csv'));
     }
 
     /**
@@ -168,7 +168,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testClose($structure)
     {
-        $this->assertInstanceOf('Spyrit\Csv\AbstractCsv',$structure->close());
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$structure->close());
         $this->assertNull($this->getFileHandlerValue($structure));
     }
 }

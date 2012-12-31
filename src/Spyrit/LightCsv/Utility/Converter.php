@@ -1,6 +1,6 @@
 <?php
 
-namespace Spyrit\Csv\Utility;
+namespace Spyrit\LightCsv\Utility;
 
 /**
  * Converter Utility class based on code from PHPExcel_Shared_String

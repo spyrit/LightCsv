@@ -1,6 +1,6 @@
 {
-    "name": "spyrit/csv",
-    "description": "Spyrit Csv reader and writer library",
+    "name": "spyrit/light-csv",
+    "description": "Spyrit Light Csv reader and writer library",
     "type": "library",
     "keywords": ["csv", "import", "export"],
     "authors": [
@@ -9,9 +9,14 @@
             "email": "charles.sanquer@spyrit.net"
         }
     ],
+    "license": "LGPL-3.0+",
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "ext-mbstring": "*"
+    },
+    "suggest": {
+        "ext-iconv": "*",
     },
     "require-dev": {
     },
