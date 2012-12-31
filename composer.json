@@ -16,7 +16,7 @@
         "ext-mbstring": "*"
     },
     "suggest": {
-        "ext-iconv": "*",
+        "ext-iconv": "*"
     },
     "require-dev": {
     },
