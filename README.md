@@ -27,7 +27,7 @@ Instanciate a new CSVReader with the following CSV parameters:
 * field enclosure character  (default for Excel = " ) 
 * character encoding = (default for Excel = CP1252 ) 
 * end of line character (default for Excel = \r\n )
-* escape character (default for Excel = \\)
+* escape character (default for Excel = \\ )
 
 ```php
 use Spyrit\LightCsv\CsvReader;
@@ -44,7 +44,7 @@ foreach (reader as $row) {
 }
 
 //close the csv file
-$reader->close;
+$reader->close();
 ```
 
 ###Write
@@ -55,7 +55,7 @@ Instanciate a new CSVWriter with the following CSV parameters:
 * field enclosure character  (default for Excel = " ) 
 * character encoding = (default for Excel = CP1252 ) 
 * end of line character (default for Excel = \r\n )
-* escape character (default for Excel = \\)
+* escape character (default for Excel = \\ )
 * UTF8 BOM (default false) 
 
 ```php
@@ -78,7 +78,7 @@ $writer->writeRows(array(
 ));
 
 //close the csv file
-$writer->close;
+$writer->close();
 ```
 
 Requirements
