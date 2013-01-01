@@ -45,6 +45,31 @@ class CsvReaderTest extends AbstractCsvTestCase
     }
 
     /**
+     * @dataProvider providerCount
+     */
+    public function testCount($options, $filename, $expected)
+    {
+        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3]);
+        $this->reader->setFilename($filename);
+        $this->assertEquals($expected, count($this->reader));
+    }
+        
+    public function providerCount()
+    {
+        return array(
+            array(
+                array(',','"', 'UTF-8', "\n"),
+                __DIR__.'/../Fixtures/test1.csv',
+                3
+            ),
+            array(
+                array(';','"', 'CP1252', "\n"),
+                __DIR__.'/../Fixtures/test2.csv',
+                4
+            ),
+        );
+    }
+    /**
      * @dataProvider providerReading
      */
     public function testReading($options, $filename, $expected)
@@ -52,12 +77,19 @@ class CsvReaderTest extends AbstractCsvTestCase
         $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3]);
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->open($filename));
 
-        $actual = array();
-        foreach ($this->reader as $key => $value) {
-            $actual[] = $value;
+        $actual1 = array();
+        foreach ($this->reader as $value) {
+            $actual1[] = $value;
         }
-
-        $this->assertEquals($expected, $actual);
+        
+        $this->reader->reset();
+        $actual2 = array();
+        while ($row = $this->reader->getRow()) {
+            $actual2[] = $row;
+        }
+        
+        $this->assertEquals($expected, $actual1);
+        $this->assertEquals($expected, $actual2);
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->close());
     }
 

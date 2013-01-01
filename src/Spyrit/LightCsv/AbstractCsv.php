@@ -301,7 +301,6 @@ abstract class AbstractCsv
         }
 
         $this->openFile($this->fileHandlerMode);
-
         return $this;
     }
 
@@ -313,7 +312,6 @@ abstract class AbstractCsv
     public function close()
     {
         $this->closeFile();
-
         return $this;
     }
 }

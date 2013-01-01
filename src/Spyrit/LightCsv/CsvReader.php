@@ -10,7 +10,7 @@ use Spyrit\LightCsv\Utility\Converter;
  *
  * @author Charles SANQUER - Spyrit Systemes <charles.sanquer@spyrit.net>
  */
-class CsvReader extends AbstractCsv implements \Iterator
+class CsvReader extends AbstractCsv implements \Iterator , \Countable
 {
     /**
      *
@@ -40,6 +40,13 @@ class CsvReader extends AbstractCsv implements \Iterator
         $this->fileHandlerMode = 'rb';
     }
 
+    /**
+     * 
+     * @param resource $fileHandler
+     * @return array
+     * 
+     * @throws \InvalidArgumentException
+     */
     protected function readLine($fileHandler)
     {
         $result = null;
@@ -68,12 +75,47 @@ class CsvReader extends AbstractCsv implements \Iterator
         return $result;
     }
 
-    // iterator methods for reading CSV
+    /**
+     *
+     * @return array
+     */
+    public function getRow()
+    {
+        if ($this->valid()) {
+            $current = $this->current();
+            $this->next();
+            return $current;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * reset CSV reading to 1st line
+     * 
+     * aliases for iterator rewind
+     */
+    public function reset()
+    {
+        $this->rewind();
+    }
+    
+/******************************************************************************/
+/*                   iterator interface methods                               */
+/******************************************************************************/
+    /**
+     * 
+     * @return array
+     */
     public function current()
     {
         return $this->currentValues;
     }
 
+    /**
+     * 
+     * @return int
+     */
     public function key()
     {
         return $this->position;
@@ -87,16 +129,42 @@ class CsvReader extends AbstractCsv implements \Iterator
 
     public function rewind()
     {
-        if ($this->isFileOpened()) {
-            $this->position = 0;
-            rewind($this->getFileHandler());
+        if (!$this->isFileOpened()) {
+            $this->openFile($this->fileHandlerMode);
         }
-
+        
+        $this->position = 0;
+        rewind($this->getFileHandler());
         $this->currentValues = $this->readLine($this->getFileHandler());
     }
 
+    /**
+     * 
+     * @return bool
+     */
     public function valid()
     {
         return $this->currentValues !== null;
+    }
+    
+/******************************************************************************/
+/*                   countable interface methods                               */
+/******************************************************************************/
+    public function count()
+    {
+        if (!$this->isFileOpened()) {
+            $this->openFile($this->fileHandlerMode);
+        }
+        
+        $count = 0;
+        rewind($this->getFileHandler());
+        while(!feof($this->getFileHandler())) {
+            $line = fgets($this->getFileHandler());
+            if ($line !== null && $line != '') {
+                $count++;
+            }
+        }
+        
+        return $count;
     }
 }
