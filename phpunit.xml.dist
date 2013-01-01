@@ -14,7 +14,7 @@
     bootstrap                   = "./tests/bootstrap.php" >
 
     <testsuites>
-        <testsuite name="Spyrit Csv test suite">
+        <testsuite name="Spyrit LightCsv test suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
@@ -29,9 +29,9 @@
         </whitelist>
     </filter>
 
-    <logging>
+<!--    <logging>
       <log type="coverage-html" target="coverage" charset="UTF-8"
            yui="true" highlight="true"
            lowUpperBound="35" highLowerBound="70"/>
-    </logging>
+    </logging>-->
 </phpunit>
