@@ -4,17 +4,82 @@ Spyrit LightCSV
 Installation
 ------------
 
-- get composer http://getcomposer.org/ and install dependencies
+* get composer http://getcomposer.org/ and install dependencies
 
-    curl -s https://getcomposer.org/installer | php
+        curl -s https://getcomposer.org/installer | php
 
-- add "spyrit/light-csv" package to your composer.json file require section
+* add "spyrit/light-csv" package to your composer.json file require section
 
-- install dependencies
+* install dependencies
     
-    php composer.phar install
+        php composer.phar install
 
-- include vendor/autoload.php
+* include vendor/autoload.php
+
+How To
+------
+
+###Read
+
+Instanciate a new CSVReader with the following CSV parameters:
+
+* field delimiter (default for Excel : ';')
+* field enclosure character  (default for Excel : '"') 
+* character encoding = (default for Excel : 'CP1252') 
+* end of line character (default for Excel : "\r\n")
+* escape character (default for Excel : "\\")
+
+```php
+use Spyrit\LightCsv\CsvReader;
+
+// create the reader
+$reader = new CsvReader(';', '"', 'CP1252', "\r\n", "\\");
+
+//Open the csv file to read
+$reader->open('test.csv');
+
+//Read each row
+foreach (reader as $row) {
+    // do what you want with the current row array : $row
+}
+
+//close the csv file
+$reader->close;
+```
+
+###Write
+
+Instanciate a new CSVWriter with the following CSV parameters:
+
+* field delimiter (default for Excel : ';')
+* field enclosure character  (default for Excel : '"') 
+* character encoding = (default for Excel : 'CP1252') 
+* end of line character (default for Excel : "\r\n")
+* escape character (default for Excel : "\\")
+* UTF8 BOM (default false) 
+
+```php
+use Spyrit\LightCsv\CsvWriter;
+
+// create the writer
+$writer = new CsvWriter(';', '"', 'CP1252', "\r\n", "\\", false);
+
+//Open the csv file to write
+$writer->open('test.csv');
+
+//Write a row
+$writer->writeRow(array('a', 'b', 'c'));
+
+//Write multiple rows at the same time
+$writer->writeRows(array(
+    array('d', 'e', 'f'),
+    array('g', 'h', 'i'),
+    array('j', 'k', 'l'),
+));
+
+//close the csv file
+$writer->close;
+```
 
 Requirements
 ------------
