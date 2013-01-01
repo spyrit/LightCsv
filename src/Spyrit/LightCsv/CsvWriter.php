@@ -38,7 +38,7 @@ class CsvWriter extends AbstractCsv
     /**
      * open a csv file to write
      *
-     * @param  string                  $filename default = null
+     * @param  string                       $filename default = null
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function open($filename = null)

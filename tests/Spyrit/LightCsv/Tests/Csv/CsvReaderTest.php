@@ -53,7 +53,7 @@ class CsvReaderTest extends AbstractCsvTestCase
         $this->reader->setFilename($filename);
         $this->assertEquals($expected, count($this->reader));
     }
-        
+
     public function providerCount()
     {
         return array(
@@ -81,13 +81,13 @@ class CsvReaderTest extends AbstractCsvTestCase
         foreach ($this->reader as $value) {
             $actual1[] = $value;
         }
-        
+
         $this->reader->reset();
         $actual2 = array();
         while ($row = $this->reader->getRow()) {
             $actual2[] = $row;
         }
-        
+
         $this->assertEquals($expected, $actual1);
         $this->assertEquals($expected, $actual2);
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->close());

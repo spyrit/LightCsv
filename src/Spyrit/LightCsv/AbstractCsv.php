@@ -83,7 +83,7 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string                  $filename
+     * @param  string                       $filename
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setFilename($filename)
@@ -104,7 +104,7 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string                  $eol
+     * @param  string                       $eol
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setLineEndings($eol)
@@ -137,7 +137,7 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string                  $encoding
+     * @param  string                       $encoding
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEncoding($encoding)
@@ -149,7 +149,7 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string                  $enclosure
+     * @param  string                       $enclosure
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEnclosure($enclosure)
@@ -161,7 +161,7 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string                  $escape
+     * @param  string                       $escape
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEscape($escape)
@@ -173,7 +173,7 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string                  $delimiter
+     * @param  string                       $delimiter
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setDelimiter($delimiter)
@@ -289,9 +289,9 @@ abstract class AbstractCsv
     /**
      * open a csv file to read or write
      *
-     * @param  string                  $filename default = null
+     * @param  string                       $filename default = null
      * @return \Spyrit\LightCsv\AbstractCsv
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     public function open($filename = null)
@@ -301,6 +301,7 @@ abstract class AbstractCsv
         }
 
         $this->openFile($this->fileHandlerMode);
+
         return $this;
     }
 
@@ -312,6 +313,7 @@ abstract class AbstractCsv
     public function close()
     {
         $this->closeFile();
+
         return $this;
     }
 }

@@ -41,10 +41,10 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     }
 
     /**
-     * 
-     * @param resource $fileHandler
+     *
+     * @param  resource $fileHandler
      * @return array
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     protected function readLine($fileHandler)
@@ -84,27 +84,28 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
         if ($this->valid()) {
             $current = $this->current();
             $this->next();
+
             return $current;
         } else {
             return false;
         }
     }
-    
+
     /**
      * reset CSV reading to 1st line
-     * 
+     *
      * aliases for iterator rewind
      */
     public function reset()
     {
         $this->rewind();
     }
-    
+
 /******************************************************************************/
 /*                   iterator interface methods                               */
 /******************************************************************************/
     /**
-     * 
+     *
      * @return array
      */
     public function current()
@@ -113,7 +114,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     }
 
     /**
-     * 
+     *
      * @return int
      */
     public function key()
@@ -132,21 +133,21 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
         if (!$this->isFileOpened()) {
             $this->openFile($this->fileHandlerMode);
         }
-        
+
         $this->position = 0;
         rewind($this->getFileHandler());
         $this->currentValues = $this->readLine($this->getFileHandler());
     }
 
     /**
-     * 
+     *
      * @return bool
      */
     public function valid()
     {
         return $this->currentValues !== null;
     }
-    
+
 /******************************************************************************/
 /*                   countable interface methods                               */
 /******************************************************************************/
@@ -155,16 +156,16 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
         if (!$this->isFileOpened()) {
             $this->openFile($this->fileHandlerMode);
         }
-        
+
         $count = 0;
         rewind($this->getFileHandler());
-        while(!feof($this->getFileHandler())) {
+        while (!feof($this->getFileHandler())) {
             $line = fgets($this->getFileHandler());
             if ($line !== null && $line != '') {
                 $count++;
             }
         }
-        
+
         return $count;
     }
 }
