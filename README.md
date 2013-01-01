@@ -1,6 +1,10 @@
 Spyrit LightCSV
 ===============
 
+[![Build Status](https://travis-ci.org/spyrit/LightCsv.png)](https://travis-ci.org/spyrit/LightCsv)
+
+A light and simple  CSV Reader/Writer PHP 5.3 Library
+
 Installation
 ------------
 
