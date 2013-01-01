@@ -11,14 +11,14 @@ class Converter
 {
 
     /**
-     * Is mbstring extension avalable?
+     * Is mbstring extension available?
      *
      * @var boolean
      */
     private static $mbstringEnabled;
 
     /**
-     * Is iconv extension avalable?
+     * Is iconv extension available?
      *
      * @var boolean
      */
