@@ -31,8 +31,31 @@ class CsvReaderTest extends AbstractCsvTestCase
         $this->assertEquals('CP1252', $this->reader->getEncoding());
         $this->assertEquals("\r\n", $this->reader->getLineEndings());
         $this->assertEquals("\\", $this->reader->getEscape());
+        $this->assertFalse($this->reader->getDetectEncoding());
     }
 
+    /**
+     * @dataProvider providerGetSetDetectEncoding
+     */
+    public function testGetSetDetectEncoding($input,$expected)
+    {
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->reader->setDetectEncoding($input));
+        $this->assertEquals($expected,$this->reader->getDetectEncoding());
+    }
+
+    public function providerGetSetDetectEncoding()
+    {
+        return array(
+            array(null,false),
+            array(false,false),
+            array(true,true),
+            array(0,false),
+            array('0',false),
+            array(1,true),
+            array('1',true),
+        );
+    }
+    
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -42,6 +65,14 @@ class CsvReaderTest extends AbstractCsvTestCase
         foreach ($this->reader as $key => $value) {
             $actual[] = $value;
         }
+    }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testReadingNoFileHandler()
+    {
+        $this->reader->next();
     }
 
     /**
@@ -78,7 +109,10 @@ class CsvReaderTest extends AbstractCsvTestCase
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->open($filename));
 
         $actual1 = array();
-        foreach ($this->reader as $value) {
+        $i = 0;
+        foreach ($this->reader as $key => $value) {
+            $this->assertEquals($i, $key);
+            $i++;
             $actual1[] = $value;
         }
 

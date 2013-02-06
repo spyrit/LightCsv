@@ -2,7 +2,8 @@
 
 namespace Spyrit\LightCsv;
 
-use Spyrit\LightCsv\AbstractCsv;
+use \Spyrit\LightCsv\AbstractCsv;
+use \Spyrit\LightCsv\Utility\Converter;
 
 /**
  * Csv Reader
@@ -25,21 +26,75 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
 
     /**
      *
+     * @var bool
+     */
+    protected $detectEncoding;
+    
+    /**
+     *
+     * @var string
+     */
+    protected $detectedEncoding;
+    
+    /**
+     *
      * Default Excel Reading configuration
      *
      * @param string $delimiter default = ;
      * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252 (csv rows will be converted from this encoding)
+     * @param string $encoding  default = CP1252  default encoding if not detected (csv rows will be converted from this encoding)
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
      * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
+     * @param bool $detectEncoding default = false
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit')
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit', $detectEncoding = false)
     {
         parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $translit);
+        $this->setDetectEncoding($detectEncoding);
         $this->fileHandlerMode = 'rb';
+        $this->detectedEncoding = $this->getEncoding();
     }
 
+    /**
+     * 
+     * @return bool
+     */
+    public function getDetectEncoding()
+    {
+        return $this->detectEncoding;
+    }
+
+    /**
+     * 
+     * @param bool $detectEncoding
+     * @return \Spyrit\LightCsv\CsvReader
+     */
+    public function setDetectEncoding($detectEncoding)
+    {
+        $this->detectEncoding = (bool) $detectEncoding;
+        return $this;
+    }
+       
+    /**
+     * 
+     * @param string $filename
+     * @return \Spyrit\LightCsv\CsvReader
+     */
+    public function open($filename = null)
+    {
+        parent::open($filename);
+        $this->detectedEncoding = $this->getEncoding();
+        if ($this->detectEncoding) {
+            $text = file_get_contents($this->getFilename());
+            if ($text !== false) {
+                $this->detectedEncoding = Converter::detectEncoding($text, $this->getEncoding());
+            }
+        } 
+
+        return $this;
+    }
+    
     /**
      *
      * @param  resource $fileHandler
@@ -65,7 +120,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
                     $value = str_replace($escapes, $this->enclosure, $value);
                     // Convert encoding if necessary
                     if ($this->encoding !== 'UTF-8') {
-                        $value = $this->convertEncoding($value, $this->encoding, 'UTF-8');
+                        $value = $this->convertEncoding($value, $this->detectedEncoding, 'UTF-8');
                     }
                     $result[] = $value;
                 }

@@ -71,7 +71,7 @@ abstract class AbstractCsv
      *
      * @param string $delimiter default = ;
      * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252
+     * @param string $encoding  default = CP1252 default encoding
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
      * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
@@ -166,16 +166,13 @@ abstract class AbstractCsv
         return $this;
     }
 
-        /**
+    /**
      *
      * @param  string                       $encoding
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEncoding($encoding)
     {
-        if (in_array($encoding, array('auto', 'detect'))) {
-            $encoding = Converter::detectEncoding($encoding, 'CP1252');
-        }
         $this->encoding = empty($encoding) ? 'CP1252' : $encoding;
         return $this;
     }

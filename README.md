@@ -29,9 +29,11 @@ Instanciate a new CSVReader with the following CSV parameters:
 
 * field delimiter (default for Excel = ; )
 * field enclosure character  (default for Excel = " ) 
-* character encoding = (default for Excel = CP1252 ) 
+* character encoding = (default for Excel = CP1252 )
 * end of line character (default for Excel = \r\n )
 * escape character (default for Excel = \\ )
+* transliteration (default for Excel = null ) available options : 'translit', 'ignore', null
+* detect encoding (default for Excel = false )
 
 ```php
 use Spyrit\LightCsv\CsvReader;
@@ -61,6 +63,7 @@ Instanciate a new CSVWriter with the following CSV parameters:
 * end of line character (default for Excel = \r\n )
 * escape character (default for Excel = \\ )
 * UTF8 BOM (default false) 
+* transliteration (default for Excel = null ) available options : 'translit', 'ignore', null
 
 ```php
 use Spyrit\LightCsv\CsvWriter;
