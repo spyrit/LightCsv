@@ -3,7 +3,6 @@
 namespace Spyrit\LightCsv;
 
 use Spyrit\LightCsv\AbstractCsv;
-use Spyrit\LightCsv\Utility\Converter;
 
 /**
  * Csv Reader
@@ -33,10 +32,11 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
      * @param string $encoding  default = CP1252 (csv rows will be converted from this encoding)
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
+     * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\")
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit')
     {
-        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape);
+        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $translit);
         $this->fileHandlerMode = 'rb';
     }
 
@@ -65,7 +65,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
                     $value = str_replace($escapes, $this->enclosure, $value);
                     // Convert encoding if necessary
                     if ($this->encoding !== 'UTF-8') {
-                        $value = Converter::convertEncoding($value, $this->encoding, 'UTF-8');
+                        $value = $this->convertEncoding($value, $this->encoding, 'UTF-8');
                     }
                     $result[] = $value;
                 }

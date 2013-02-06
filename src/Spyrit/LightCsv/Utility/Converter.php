@@ -94,21 +94,47 @@ class Converter
     // @codeCoverageIgnoreEnd
 
     // @codeCoverageIgnoreStart
+    
+    /**
+     * 
+     * @param string $str
+     * @param string $fallback
+     * @return string
+     */
+    public static function detectEncoding($str, $fallback = 'UTF-8')
+    {
+        $encoding = null;
+        if (self::isMbstringEnabled()) {
+            $encoding = mb_detect_encoding($str);
+        }
+        
+        return $encoding ? $encoding : $fallback;
+    }
+    // @codeCoverageIgnoreEnd
+    
+    // @codeCoverageIgnoreStart
     /**
      * Convert string from one encoding to another. First try iconv, then mbstring, or no convertion
      *
      * @param  string $value
-     * @param  string $from  Encoding to convert from, e.g. 'UTF-16LE'
-     * @param  string $to    Encoding to convert to, e.g. 'UTF-8'
+     * @param  string $from default = auto Encoding to convert from, e.g. 'UTF-16LE'
+     * @param  string $to   default = UTF-8  Encoding to convert to, e.g. 'UTF-8'
+     * @param  string $iconvTranslit default = null Iconv translit option possible values : 'translit', 'ignore', null
      * @return string
      *
      * @copyright  Copyright (c) 2006 - 2011 PHPExcel (http://www.codeplex.com/PHPExcel)
      * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt	LGPL
      */
-    public static function convertEncoding($value, $from, $to)
+    public static function convertEncoding($value, $from = 'auto', $to = 'UTF-8', $iconvTranslit = null)
     {
+        if ($from == 'auto') {
+            $from = self::detectEncoding($value);
+        }
+        
         if (self::isIconvEnabled()) {
-            $value = iconv($from, $to, $value);
+            $iconvTranslit = strtoupper($iconvTranslit);
+            $iconvTranslit = in_array($iconvTranslit, array('TRANSLIT', 'IGNORE')) ? '//'.$iconvTranslit : '' ;
+            $value = iconv($from, $to.$iconvTranslit, $value);
 
             return $value;
         }

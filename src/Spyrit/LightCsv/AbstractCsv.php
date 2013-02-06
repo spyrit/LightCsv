@@ -2,6 +2,8 @@
 
 namespace Spyrit\LightCsv;
 
+use Spyrit\LightCsv\Utility\Converter;
+
 /**
  * Common Abstract Csv
  *
@@ -9,6 +11,12 @@ namespace Spyrit\LightCsv;
  */
 abstract class AbstractCsv
 {
+    /**
+     *
+     * @var string
+     */
+    protected $translit;
+    
     /**
      *
      * @var string
@@ -66,14 +74,16 @@ abstract class AbstractCsv
      * @param string $encoding  default = CP1252
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
+     * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\")
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit')
     {
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
         $this->setEncoding($encoding);
         $this->setLineEndings($eol);
         $this->setEscape($escape);
+        $this->setTranslit($translit);
     }
 
     public function __destruct()
@@ -134,16 +144,39 @@ abstract class AbstractCsv
 
         return $this;
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getTranslit()
+    {
+        return $this->translit;
+    }
 
     /**
+     * 
+     * @param string $translit default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
+     * @return \Spyrit\LightCsv\AbstractCsv
+     */
+    public function setTranslit($translit)
+    {
+        $translit = strtolower($translit);
+        $this->translit = in_array($translit, array('translit', 'ignore')) ? $translit : null ;
+        return $this;
+    }
+
+        /**
      *
      * @param  string                       $encoding
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setEncoding($encoding)
     {
+        if (in_array($encoding, array('auto', 'detect'))) {
+            $encoding = Converter::detectEncoding($encoding, 'CP1252');
+        }
         $this->encoding = empty($encoding) ? 'CP1252' : $encoding;
-
         return $this;
     }
 
@@ -226,6 +259,18 @@ abstract class AbstractCsv
     public function getDelimiter()
     {
         return $this->delimiter;
+    }
+
+    /**
+     * 
+     * @param string $value
+     * @param string $from
+     * @param string $to
+     * @return string
+     */
+    protected function convertEncoding($value, $from, $to)
+    {
+        return Converter::convertEncoding($value, $from, $to, $this->getTranslit());
     }
 
     /**

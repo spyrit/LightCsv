@@ -3,7 +3,6 @@
 namespace Spyrit\LightCsv;
 
 use Spyrit\LightCsv\AbstractCsv;
-use Spyrit\LightCsv\Utility\Converter;
 
 /**
  * Csv Writer
@@ -27,10 +26,11 @@ class CsvWriter extends AbstractCsv
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
      * @param bool   $useBom    default = false (BOM will be writed when opening the file)
+     * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false)
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false, $translit = 'translit')
     {
-        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape);
+        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $translit);
         $this->fileHandlerMode = 'wb';
         $this->setUseBom($useBom);
     }
@@ -137,7 +137,7 @@ class CsvWriter extends AbstractCsv
             $value = str_replace($this->enclosure, $this->escape.$this->enclosure, $value);
 
             if ($this->encoding !== 'UTF-8') {
-                $value = Converter::convertEncoding($value, 'UTF-8', $this->encoding);
+                $value = $this->convertEncoding($value, 'UTF-8', $this->encoding);
             }
 
             // Add delimiter
