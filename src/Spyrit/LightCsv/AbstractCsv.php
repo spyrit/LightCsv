@@ -16,7 +16,7 @@ abstract class AbstractCsv
      * @var string
      */
     protected $translit;
-    
+
     /**
      *
      * @var string
@@ -144,9 +144,9 @@ abstract class AbstractCsv
 
         return $this;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function getTranslit()
@@ -155,14 +155,15 @@ abstract class AbstractCsv
     }
 
     /**
-     * 
-     * @param string $translit default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
+     *
+     * @param  string                       $translit default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      * @return \Spyrit\LightCsv\AbstractCsv
      */
     public function setTranslit($translit)
     {
         $translit = strtolower($translit);
         $this->translit = in_array($translit, array('translit', 'ignore')) ? $translit : null ;
+
         return $this;
     }
 
@@ -174,6 +175,7 @@ abstract class AbstractCsv
     public function setEncoding($encoding)
     {
         $this->encoding = empty($encoding) ? 'CP1252' : $encoding;
+
         return $this;
     }
 
@@ -259,10 +261,10 @@ abstract class AbstractCsv
     }
 
     /**
-     * 
-     * @param string $value
-     * @param string $from
-     * @param string $to
+     *
+     * @param  string $value
+     * @param  string $from
+     * @param  string $to
      * @return string
      */
     protected function convertEncoding($value, $from, $to)

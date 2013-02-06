@@ -29,24 +29,24 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
      * @var bool
      */
     protected $detectEncoding;
-    
+
     /**
      *
      * @var string
      */
     protected $detectedEncoding;
-    
+
     /**
      *
      * Default Excel Reading configuration
      *
-     * @param string $delimiter default = ;
-     * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252  default encoding if not detected (csv rows will be converted from this encoding)
-     * @param string $eol       default = "\r\n"
-     * @param string $escape    default = "\\"
-     * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
-     * @param bool $detectEncoding default = false
+     * @param string $delimiter      default = ;
+     * @param string $enclosure      default = "
+     * @param string $encoding       default = CP1252  default encoding if not detected (csv rows will be converted from this encoding)
+     * @param string $eol            default = "\r\n"
+     * @param string $escape         default = "\\"
+     * @param string $translit       default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
+     * @param bool   $detectEncoding default = false
      */
     public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit', $detectEncoding = false)
     {
@@ -57,7 +57,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     }
 
     /**
-     * 
+     *
      * @return bool
      */
     public function getDetectEncoding()
@@ -66,19 +66,20 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     }
 
     /**
-     * 
-     * @param bool $detectEncoding
+     *
+     * @param  bool                       $detectEncoding
      * @return \Spyrit\LightCsv\CsvReader
      */
     public function setDetectEncoding($detectEncoding)
     {
         $this->detectEncoding = (bool) $detectEncoding;
+
         return $this;
     }
-       
+
     /**
-     * 
-     * @param string $filename
+     *
+     * @param  string                     $filename
      * @return \Spyrit\LightCsv\CsvReader
      */
     public function open($filename = null)
@@ -90,11 +91,11 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
             if ($text !== false) {
                 $this->detectedEncoding = Converter::detectEncoding($text, $this->getEncoding());
             }
-        } 
+        }
 
         return $this;
     }
-    
+
     /**
      *
      * @param  resource $fileHandler

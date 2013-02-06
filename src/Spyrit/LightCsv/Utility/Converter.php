@@ -94,31 +94,52 @@ class Converter
     // @codeCoverageIgnoreEnd
 
     // @codeCoverageIgnoreStart
-    
+
     /**
-     * 
-     * @param string $str
-     * @param string $fallback
+     *
+     * @param  string $str
+     * @param  string $fallback
      * @return string
      */
     public static function detectEncoding($str, $fallback = 'UTF-8')
     {
         $encoding = null;
         if (self::isMbstringEnabled()) {
-            $encoding = mb_detect_encoding($str);
+            $encodingList = array(
+                'ASCII',
+                'UTF-8',
+                'ISO-8859-1',
+                'ISO-8859-2',
+                'ISO-8859-3',
+                'ISO-8859-4',
+                'ISO-8859-5',
+                'ISO-8859-6',
+                'ISO-8859-7',
+                'ISO-8859-8',
+                'ISO-8859-9',
+                'ISO-8859-10',
+                'ISO-8859-13',
+                'ISO-8859-14',
+                'ISO-8859-15',
+                'ISO-8859-16',
+                'Windows-1251',
+                'Windows-1252',
+            );
+
+            $encoding = mb_detect_encoding($str, $encodingList, true);
         }
-        
+
         return $encoding ? $encoding : $fallback;
     }
     // @codeCoverageIgnoreEnd
-    
+
     // @codeCoverageIgnoreStart
     /**
      * Convert string from one encoding to another. First try iconv, then mbstring, or no convertion
      *
      * @param  string $value
-     * @param  string $from default = auto Encoding to convert from, e.g. 'UTF-16LE'
-     * @param  string $to   default = UTF-8  Encoding to convert to, e.g. 'UTF-8'
+     * @param  string $from          default = auto Encoding to convert from, e.g. 'UTF-16LE'
+     * @param  string $to            default = UTF-8  Encoding to convert to, e.g. 'UTF-8'
      * @param  string $iconvTranslit default = null Iconv translit option possible values : 'translit', 'ignore', null
      * @return string
      *
@@ -127,27 +148,29 @@ class Converter
      */
     public static function convertEncoding($value, $from = 'auto', $to = 'UTF-8', $iconvTranslit = null)
     {
-        if ($from == 'auto') {
-            $from = self::detectEncoding($value);
-        }
-        
-        if (self::isIconvEnabled()) {
-            $iconvTranslit = strtoupper($iconvTranslit);
-            $iconvTranslit = in_array($iconvTranslit, array('TRANSLIT', 'IGNORE')) ? '//'.$iconvTranslit : '' ;
-            $value = iconv($from, $to.$iconvTranslit, $value);
+        if ($from != $to) {
+            if ($from == 'auto') {
+                $from = self::detectEncoding($value);
+            }
 
-            return $value;
-        }
+            if (self::isIconvEnabled()) {
+                $iconvTranslit = strtoupper($iconvTranslit);
+                $iconvTranslit = in_array($iconvTranslit, array('TRANSLIT', 'IGNORE')) ? '//'.$iconvTranslit : '' ;
+                $value = iconv($from, $to.$iconvTranslit, $value);
 
-        if (self::isMbstringEnabled()) {
-            $value = mb_convert_encoding($value, $to, $from);
+                return $value;
+            }
 
-            return $value;
-        }
-        if ($from == 'UTF-16LE') {
-            return self::utf16_decode($value, false);
-        } elseif ($from == 'UTF-16BE') {
-            return self::utf16_decode($value);
+            if (self::isMbstringEnabled()) {
+                $value = mb_convert_encoding($value, $to, $from);
+
+                return $value;
+            }
+            if ($from == 'UTF-16LE') {
+                return self::utf16_decode($value, false);
+            } elseif ($from == 'UTF-16BE') {
+                return self::utf16_decode($value);
+            }
         }
 
         return $value;

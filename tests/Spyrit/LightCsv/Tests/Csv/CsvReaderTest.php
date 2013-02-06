@@ -55,7 +55,7 @@ class CsvReaderTest extends AbstractCsvTestCase
             array('1',true),
         );
     }
-    
+
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -66,7 +66,7 @@ class CsvReaderTest extends AbstractCsvTestCase
             $actual[] = $value;
         }
     }
-    
+
     /**
      * @expectedException \InvalidArgumentException
      */
