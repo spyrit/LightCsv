@@ -57,6 +57,28 @@ class CsvReaderTest extends AbstractCsvTestCase
     }
 
     /**
+     * @dataProvider providerGetSetSkipEmptyLines
+     */
+    public function testGetSetSkipEmptyLines($input,$expected)
+    {
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->reader->setSkipEmptyLines($input));
+        $this->assertEquals($expected,$this->reader->getSkipEmptyLines());
+    }
+
+    public function providerGetSetSkipEmptyLines()
+    {
+        return array(
+            array(null,false),
+            array(false,false),
+            array(true,true),
+            array(0,false),
+            array('0',false),
+            array(1,true),
+            array('1',true),
+        );
+    }
+
+    /**
      * @expectedException \InvalidArgumentException
      */
     public function testReadingNoFilename()
@@ -80,7 +102,7 @@ class CsvReaderTest extends AbstractCsvTestCase
      */
     public function testCount($options, $filename, $expected)
     {
-        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3]);
+        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3], $options[4], $options[5], $options[6], $options[7]);
         $this->reader->setFilename($filename);
         $this->assertEquals($expected, count($this->reader));
     }
@@ -89,14 +111,19 @@ class CsvReaderTest extends AbstractCsvTestCase
     {
         return array(
             array(
-                array(',','"', 'UTF-8', "\n"),
+                array(',','"', 'UTF-8', "\n", "\\", 'translit', false, false),
                 __DIR__.'/../Fixtures/test1.csv',
                 3
             ),
             array(
-                array(';','"', 'CP1252', "\n"),
+                array(';','"', 'CP1252', "\n", "\\", 'translit', false, false),
                 __DIR__.'/../Fixtures/test2.csv',
                 4
+            ),
+            array(
+                array(',','"', 'UTF-8', "\n", "\\", 'translit', false, true),
+                __DIR__.'/../Fixtures/test3.csv',
+                3
             ),
         );
     }
@@ -105,13 +132,12 @@ class CsvReaderTest extends AbstractCsvTestCase
      */
     public function testReading($options, $filename, $expected)
     {
-        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3]);
+        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3], $options[4], $options[5], $options[6], $options[7]);
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader',$this->reader->open($filename));
 
         $actual1 = array();
         $i = 0;
         foreach ($this->reader as $key => $value) {
-            $this->assertEquals($i, $key);
             $i++;
             $actual1[] = $value;
         }
@@ -131,7 +157,7 @@ class CsvReaderTest extends AbstractCsvTestCase
     {
         return array(
             array(
-                array(',','"', 'UTF-8', "\n"),
+                array(',','"', 'UTF-8', "\n", "\\", 'translit', false, false),
                 __DIR__.'/../Fixtures/test1.csv',
                 array(
                     array('nom','prénom','age'),
@@ -140,13 +166,22 @@ class CsvReaderTest extends AbstractCsvTestCase
                 )
             ),
             array(
-                array(';','"', 'CP1252', "\n"),
+                array(';','"', 'CP1252', "\n", "\\", 'translit', false, false),
                 __DIR__.'/../Fixtures/test2.csv',
                 array(
                     array('nom','prénom','age'),
                     array('Bousquet', 'Inès' ,'32'),
                     array('Morel','Monique','41'),
                     array('Gauthier','Aurélie','24'),
+                )
+            ),
+            array(
+                array(',','"', 'UTF-8', "\n", "\\", 'translit', false, true),
+                __DIR__.'/../Fixtures/test3.csv',
+                array(
+                    array('nom','prénom','age'),
+                    array('Martin','Durand','28'),
+                    array('Alain','Richard','36'),
                 )
             ),
         );

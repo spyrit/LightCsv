@@ -34,6 +34,7 @@ Instanciate a new CSVReader with the following CSV parameters:
 * escape character (default for Excel = \\ )
 * transliteration (default for Excel = null ) available options : 'translit', 'ignore', null
 * detect encoding (default for Excel = false )
+* skip empty lines (default for Excel = false )
 
 ```php
 use Spyrit\LightCsv\CsvReader;

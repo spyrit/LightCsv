@@ -38,6 +38,12 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
 
     /**
      *
+     * @var bool
+     */
+    protected $skipEmptyLines;
+
+    /**
+     *
      * Default Excel Reading configuration
      *
      * @param string $delimiter      default = ;
@@ -47,11 +53,13 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
      * @param string $escape         default = "\\"
      * @param string $translit       default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      * @param bool   $detectEncoding default = false
+     * @param bool   $skipEmptyLines default = false
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit', $detectEncoding = false)
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit', $detectEncoding = false, $skipEmptyLines = false)
     {
         parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $translit);
         $this->setDetectEncoding($detectEncoding);
+        $this->setSkipEmptyLines($skipEmptyLines);
         $this->fileHandlerMode = 'rb';
         $this->detectedEncoding = $this->getEncoding();
     }
@@ -73,6 +81,27 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     public function setDetectEncoding($detectEncoding)
     {
         $this->detectEncoding = (bool) $detectEncoding;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function getSkipEmptyLines()
+    {
+        return $this->skipEmptyLines;
+    }
+
+    /**
+     *
+     * @param  bool                       $skipEmptyLines
+     * @return \Spyrit\LightCsv\CsvReader
+     */
+    public function setSkipEmptyLines($skipEmptyLines)
+    {
+        $this->skipEmptyLines = (bool) $skipEmptyLines;
 
         return $this;
     }
@@ -116,6 +145,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
             $row = fgetcsv($fileHandler, 0, $this->delimiter, $this->enclosure);
             if ($row !== false) {
                 $result = array();
+                $empty = true;
                 foreach ($row as $value) {
                     // Unescape enclosures
                     $value = str_replace($escapes, $this->enclosure, $value);
@@ -123,7 +153,15 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
                     if ($this->encoding !== 'UTF-8') {
                         $value = $this->convertEncoding($value, $this->detectedEncoding, 'UTF-8');
                     }
+                    if (!empty($value)) {
+                        $empty = false;
+                    }
+
                     $result[] = $value;
+                }
+
+                if ($this->skipEmptyLines && $empty) {
+                    $result = array();
                 }
             }
         }
@@ -182,6 +220,10 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     {
         $this->position++;
         $this->currentValues = $this->readLine($this->getFileHandler());
+
+        if ($this->skipEmptyLines && is_array($this->currentValues) && empty($this->currentValues)) {
+            $this->next();
+        }
     }
 
     public function rewind()
@@ -215,10 +257,22 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
 
         $count = 0;
         rewind($this->getFileHandler());
-        while (!feof($this->getFileHandler())) {
-            $line = fgets($this->getFileHandler());
-            if ($line !== null && $line != '') {
-                $count++;
+
+        if ($this->skipEmptyLines) {
+            // empty row pattern
+            $pattern = '/(('.$this->enclosure.$this->enclosure.')?'.$this->delimiter.')+'.$this->eol.'/';
+            while (!feof($this->getFileHandler())) {
+                $line = fgets($this->getFileHandler());
+                if ($line !== null && $line != '' && $line !== $this->eol && !preg_match($pattern, $line)) {
+                    $count++;
+                }
+            }
+        } else {
+            while (!feof($this->getFileHandler())) {
+                $line = fgets($this->getFileHandler());
+                if ($line !== null && $line != '') {
+                    $count++;
+                }
             }
         }
 
