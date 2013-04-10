@@ -125,6 +125,11 @@ class CsvReaderTest extends AbstractCsvTestCase
                 __DIR__.'/../Fixtures/test3.csv',
                 3
             ),
+            array(
+                array(',','"', 'UTF-8', "\n", "\\", 'translit', false, true),
+                __DIR__.'/../Fixtures/test4.csv',
+                4
+            ),            
         );
     }
     /**
@@ -184,6 +189,16 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Alain','Richard','36'),
                 )
             ),
+            array(
+                array(',','"', 'UTF-8', "\n", "\\", 'translit', false, true),
+                __DIR__.'/../Fixtures/test4.csv',
+                array(
+                    array('nom','prénom','age'),
+                    array('Martin','Durand','28'),
+                    array('Alain','Richard','36'),
+                    array('Dupont', '', ''),
+                )
+            ),            
         );
     }
 }
