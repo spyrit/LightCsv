@@ -261,7 +261,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
         if ($this->skipEmptyLines) {
             // empty row pattern without alphanumeric
             $pattern = '/(('.$this->enclosure.$this->enclosure.')?'.$this->delimiter.')+'.$this->eol.'/';
-            $patternAlphanum = '([[:alnum:]]+)';
+            $patternAlphaNum = '([[:alnum:]]+)';
             
             while (!feof($this->getFileHandler())) {
                 $line = fgets($this->getFileHandler());
