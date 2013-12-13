@@ -14,7 +14,7 @@ abstract class AbstractCsvTestCase extends \PHPUnit_Framework_TestCase
     /**
      * get fileHandler (non public access) value for unit tests
      *
-     * @param Spyrit\LightCsv\AbstractCsv
+     * @param AbstractCsv
      *
      * @return mixed
      */
@@ -42,5 +42,4 @@ abstract class AbstractCsvTestCase extends \PHPUnit_Framework_TestCase
 
         return $prop->getValue($structure);
     }
-
 }

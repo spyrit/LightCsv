@@ -9,7 +9,6 @@ namespace Spyrit\LightCsv\Utility;
  */
 class Converter
 {
-
     /**
      * Is mbstring extension available?
      *
@@ -43,8 +42,8 @@ class Converter
 
         return self::$mbstringEnabled;
     }
-    // @codeCoverageIgnoreEnd
 
+    // @codeCoverageIgnoreEnd
     // @codeCoverageIgnoreStart
     /**
      * detect if iconv is available
@@ -75,12 +74,8 @@ class Converter
         }
 
         // CUSTOM: IBM AIX iconv() does not work
-        if (defined('PHP_OS')
-            && @stristr(PHP_OS, 'AIX')
-            && defined('ICONV_IMPL') && (@strcasecmp(ICONV_IMPL, 'unknown') == 0)
-            && defined('ICONV_VERSION') && (@strcasecmp(ICONV_VERSION, 'unknown') == 0)
-        )
-        {
+        if (defined('PHP_OS') && @stristr(PHP_OS, 'AIX') && defined('ICONV_IMPL') && (@strcasecmp(ICONV_IMPL, 'unknown') == 0) && defined('ICONV_VERSION') && (@strcasecmp(ICONV_VERSION, 'unknown') == 0)
+        ) {
             self::$iconvEnabled = false;
 
             return self::$iconvEnabled;
@@ -92,7 +87,6 @@ class Converter
         return self::$iconvEnabled;
     }
     // @codeCoverageIgnoreEnd
-
     // @codeCoverageIgnoreStart
 
     /**
@@ -131,8 +125,8 @@ class Converter
 
         return $encoding ? $encoding : $fallback;
     }
-    // @codeCoverageIgnoreEnd
 
+    // @codeCoverageIgnoreEnd
     // @codeCoverageIgnoreStart
     /**
      * Convert string from one encoding to another. First try iconv, then mbstring, or no convertion
@@ -155,7 +149,7 @@ class Converter
 
             if (self::isIconvEnabled()) {
                 $iconvTranslit = strtoupper($iconvTranslit);
-                $iconvTranslit = in_array($iconvTranslit, array('TRANSLIT', 'IGNORE')) ? '//'.$iconvTranslit : '' ;
+                $iconvTranslit = in_array($iconvTranslit, array('TRANSLIT', 'IGNORE')) ? '//'.$iconvTranslit : '';
                 $value = iconv($from, $to.$iconvTranslit, $value);
 
                 return $value;
@@ -175,8 +169,8 @@ class Converter
 
         return $value;
     }
-    // @codeCoverageIgnoreEnd
 
+    // @codeCoverageIgnoreEnd
     // @codeCoverageIgnoreStart
     /**
      * Decode UTF-16 encoded strings.

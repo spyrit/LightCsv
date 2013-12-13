@@ -67,6 +67,12 @@ abstract class AbstractCsv
 
     /**
      *
+     * @var bool
+     */
+    protected $useBom = false;
+
+    /**
+     *
      * Default Excel configuration
      *
      * @param string $delimiter default = ;
@@ -74,9 +80,10 @@ abstract class AbstractCsv
      * @param string $encoding  default = CP1252 default encoding
      * @param string $eol       default = "\r\n"
      * @param string $escape    default = "\\"
+     * @param bool   $useBom    default = false (BOM will be handled when opening the file)
      * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit')
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false, $translit = 'translit')
     {
         $this->setDelimiter($delimiter);
         $this->setEnclosure($enclosure);
@@ -84,6 +91,7 @@ abstract class AbstractCsv
         $this->setLineEndings($eol);
         $this->setEscape($escape);
         $this->setTranslit($translit);
+        $this->setUseBom($useBom);
     }
 
     public function __destruct()
@@ -162,7 +170,7 @@ abstract class AbstractCsv
     public function setTranslit($translit)
     {
         $translit = strtolower($translit);
-        $this->translit = in_array($translit, array('translit', 'ignore')) ? $translit : null ;
+        $this->translit = in_array($translit, array('translit', 'ignore')) ? $translit : null;
 
         return $this;
     }
@@ -262,14 +270,63 @@ abstract class AbstractCsv
 
     /**
      *
-     * @param  string $value
+     * @return bool
+     */
+    public function getUseBom()
+    {
+        return $this->useBom;
+    }
+
+    /**
+     *
+     * @param bool $useBom (BOM will be writed when opening the file)
+     *
+     * @return \Spyrit\LightCsv\AbstractCsv
+     */
+    public function setUseBom($useBom)
+    {
+        $this->useBom = (bool) $useBom;
+
+        return $this;
+    }
+
+    /**
+     * Write UTF-8 BOM code if encoding is UTF-8 and useBom is set to true
+     *
+     * @return \Spyrit\LightCsv\AbstractCsv
+     */
+    protected function writeBom()
+    {
+        if ($this->useBom && $this->encoding == 'UTF-8') {
+            // Write the UTF-8 BOM code
+            fwrite($this->fileHandler, "\xEF\xBB\xBF");
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Remove BOM in the provided string
+     * 
+     * @param string $str
+     * @return string
+     */
+    protected function removeBom($str)
+    {
+        return $str !== false && $this->useBom ? str_replace("\xEF\xBB\xBF",'',$str) : $str; 
+    }
+    
+
+    /**
+     *
+     * @param  string $str
      * @param  string $from
      * @param  string $to
      * @return string
      */
-    protected function convertEncoding($value, $from, $to)
+    protected function convertEncoding($str, $from, $to)
     {
-        return Converter::convertEncoding($value, $from, $to, $this->getTranslit());
+        return $str !== false && $from != $to ? Converter::convertEncoding($str, $from, $to, $this->getTranslit()) : $str;
     }
 
     /**
@@ -340,7 +397,7 @@ abstract class AbstractCsv
      */
     public function open($filename = null)
     {
-        if (!is_null($filename) && $filename != '' ) {
+        if (!is_null($filename) && $filename != '') {
             $this->setFilename($filename);
         }
 

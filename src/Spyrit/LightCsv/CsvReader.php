@@ -10,7 +10,7 @@ use \Spyrit\LightCsv\Utility\Converter;
  *
  * @author Charles SANQUER - Spyrit Systemes <charles.sanquer@spyrit.net>
  */
-class CsvReader extends AbstractCsv implements \Iterator , \Countable
+class CsvReader extends AbstractCsv implements \Iterator, \Countable
 {
     /**
      *
@@ -28,7 +28,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
      *
      * @var bool
      */
-    protected $detectEncoding;
+    protected $forceEncodingDetection;
 
     /**
      *
@@ -51,36 +51,36 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
      * @param string $encoding       default = CP1252  default encoding if not detected (csv rows will be converted from this encoding)
      * @param string $eol            default = "\r\n"
      * @param string $escape         default = "\\"
+     * @param bool   $useBom         default = false (BOM will be removed when opening the file)
      * @param string $translit       default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
-     * @param bool   $detectEncoding default = false
+     * @param bool   $forceEncodingDetection default = false
      * @param bool   $skipEmptyLines default = false
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $translit = 'translit', $detectEncoding = false, $skipEmptyLines = false)
+    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false, $translit = 'translit', $forceEncodingDetection = false, $skipEmptyLines = false)
     {
-        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $translit);
-        $this->setDetectEncoding($detectEncoding);
+        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $useBom, $translit);
+        $this->setForceEncodingDetection($forceEncodingDetection);
         $this->setSkipEmptyLines($skipEmptyLines);
         $this->fileHandlerMode = 'rb';
-        $this->detectedEncoding = $this->getEncoding();
     }
 
     /**
      *
      * @return bool
      */
-    public function getDetectEncoding()
+    public function getForceEncodingDetection()
     {
-        return $this->detectEncoding;
+        return $this->forceEncodingDetection;
     }
 
     /**
      *
-     * @param  bool                       $detectEncoding
+     * @param  bool                       $forceEncodingDetection
      * @return \Spyrit\LightCsv\CsvReader
      */
-    public function setDetectEncoding($detectEncoding)
+    public function setForceEncodingDetection($forceEncodingDetection)
     {
-        $this->detectEncoding = (bool) $detectEncoding;
+        $this->forceEncodingDetection = (bool) $forceEncodingDetection;
 
         return $this;
     }
@@ -114,17 +114,24 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     public function open($filename = null)
     {
         parent::open($filename);
+        $this->detectEncoding();
+        return $this;
+    }
+
+    /**
+     * Detect current file encoding if ForceEncodingDetection is set to true or encoding parameter is null
+     */
+    protected function detectEncoding()
+    {
         $this->detectedEncoding = $this->getEncoding();
-        if ($this->detectEncoding) {
+        if ($this->forceEncodingDetection || empty($this->detectedEncoding)) {
             $text = file_get_contents($this->getFilename());
             if ($text !== false) {
                 $this->detectedEncoding = Converter::detectEncoding($text, $this->getEncoding());
             }
         }
-
-        return $this;
     }
-
+    
     /**
      *
      * @param  resource $fileHandler
@@ -140,23 +147,15 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
         }
 
         if (!feof($fileHandler)) {
-            $escapes = array($this->escape.$this->enclosure, $this->enclosure.$this->enclosure);
-
-            $row = fgetcsv($fileHandler, 0, $this->delimiter, $this->enclosure);
-            if ($row !== false) {
+            $line = $this->convertEncoding($this->removeBom(fgets($fileHandler)), $this->detectedEncoding, 'UTF-8');
+            if ($line !== false) {
+                $row = str_getcsv($line, $this->delimiter, $this->enclosure, $this->escape);
                 $result = array();
                 $empty = true;
                 foreach ($row as $value) {
-                    // Unescape enclosures
-                    $value = str_replace($escapes, $this->enclosure, $value);
-                    // Convert encoding if necessary
-                    if ($this->encoding !== 'UTF-8') {
-                        $value = $this->convertEncoding($value, $this->detectedEncoding, 'UTF-8');
-                    }
                     if (!empty($value)) {
                         $empty = false;
                     }
-
                     $result[] = $value;
                 }
 
@@ -194,10 +193,10 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     {
         $this->rewind();
     }
+    /*     * *************************************************************************** */
+    /*                   iterator interface methods                               */
+    /*     * *************************************************************************** */
 
-/******************************************************************************/
-/*                   iterator interface methods                               */
-/******************************************************************************/
     /**
      *
      * @return array
@@ -218,9 +217,9 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
 
     public function next()
     {
-        $this->position++;
         $this->currentValues = $this->readLine($this->getFileHandler());
-
+        $this->position++;
+        
         if ($this->skipEmptyLines && is_array($this->currentValues) && empty($this->currentValues)) {
             $this->next();
         }
@@ -245,10 +244,10 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
     {
         return $this->currentValues !== null;
     }
+    /*     * *************************************************************************** */
+    /*                   countable interface methods                               */
+    /*     * *************************************************************************** */
 
-/******************************************************************************/
-/*                   countable interface methods                               */
-/******************************************************************************/
     public function count()
     {
         if (!$this->isFileOpened()) {
@@ -262,7 +261,7 @@ class CsvReader extends AbstractCsv implements \Iterator , \Countable
             // empty row pattern without alphanumeric
             $pattern = '/(('.$this->enclosure.$this->enclosure.')?'.$this->delimiter.')+'.$this->eol.'/';
             $patternAlphaNum = '([[:alnum:]]+)';
-            
+
             while (!feof($this->getFileHandler())) {
                 $line = fgets($this->getFileHandler());
                 if ($line !== null && $line != '' && $line !== $this->eol && !(preg_match($pattern, $line) && !preg_match($patternAlphaNum, $line))) {
