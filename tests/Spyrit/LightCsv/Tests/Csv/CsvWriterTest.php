@@ -45,10 +45,10 @@ class CsvWriterTest extends AbstractCsvTestCase
 
         $this->writer = new CsvWriter($options[0], $options[1], $options[2], $options[3]);
 
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->open($filename));
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->writeRow($row));
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->open($filename));
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->writeRow($row));
         $this->assertEquals($expectedCsv, file_get_contents($filename));
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->close());
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->close());
 
         if (file_exists($filename)) {
             unlink($filename);
@@ -59,15 +59,15 @@ class CsvWriterTest extends AbstractCsvTestCase
     {
         return array(
             array(
-                array(',','"', 'UTF-8', "\n"),
+                array(',', '"', 'UTF-8', "\n"),
                 __DIR__.'/../Fixtures/testWrite.csv',
-                array('Martin','Durand','28'),
+                array('Martin', 'Durand', '28'),
                 '"Martin","Durand","28"'."\n",
             ),
             array(
-                array(';','"', 'CP1252', "r\n"),
+                array(';', '"', 'CP1252', "r\n"),
                 __DIR__.'/../Fixtures/testWrite2.csv',
-                array('Gauthier','Aurélie','24'),
+                array('Gauthier', 'Aurélie', '24'),
                 mb_convert_encoding('"Gauthier";"Aurélie";"24"'."\r\n", 'CP1252', 'UTF-8'),
             ),
         );
@@ -84,10 +84,10 @@ class CsvWriterTest extends AbstractCsvTestCase
 
         $this->writer = new CsvWriter($options[0], $options[1], $options[2], $options[3]);
 
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->setFilename($filename));
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->writeRows($rows));
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->setFilename($filename));
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->writeRows($rows));
         $this->assertEquals($expectedCsv, file_get_contents($filename));
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->close());
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->close());
 
         if (file_exists($filename)) {
             unlink($filename);
@@ -98,12 +98,12 @@ class CsvWriterTest extends AbstractCsvTestCase
     {
         return array(
             array(
-                array(',','"', 'UTF-8', "\n"),
+                array(',', '"', 'UTF-8', "\n"),
                 __DIR__.'/../Fixtures/testWrite.csv',
                 array(
-                    array('nom','prénom','age'),
-                    array('Martin','Durand','28'),
-                    array('Alain','Richard','36'),
+                    array('nom', 'prénom', 'age'),
+                    array('Martin', 'Durand', '28'),
+                    array('Alain', 'Richard', '36'),
                 ),
                 '"nom","prénom","age"'."\n".'"Martin","Durand","28"'."\n".'"Alain","Richard","36"'."\n",
             ),
@@ -115,7 +115,7 @@ class CsvWriterTest extends AbstractCsvTestCase
         $this->assertEquals(array(
             'Content-Type' => 'application/csv',
             'Content-Disposition' => 'attachment;filename="test.csv"',
-        ), $this->writer->getHttpHeaders('test.csv'));
+                ), $this->writer->getHttpHeaders('test.csv'));
     }
 
     /**
@@ -123,7 +123,7 @@ class CsvWriterTest extends AbstractCsvTestCase
      */
     public function testWritingLineNoFilename()
     {
-        $this->writer->writeRow(array('nom','prénom','age'));
+        $this->writer->writeRow(array('nom', 'prénom', 'age'));
     }
 
     /**
@@ -135,11 +135,11 @@ class CsvWriterTest extends AbstractCsvTestCase
             unlink($filename);
         }
 
-        $this->writer = new CsvWriter(',','"', $options[0], "\n", "\\",$options[1]);
+        $this->writer = new CsvWriter(',', '"', $options[0], "\n", "\\", $options[1]);
 
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->open($filename));
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->open($filename));
         $this->assertEquals($expectedCsv, file_get_contents($filename));
-        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter',$this->writer->close());
+        $this->assertInstanceOf('Spyrit\LightCsv\CsvWriter', $this->writer->close());
 
         if (file_exists($filename)) {
             unlink($filename);
@@ -164,27 +164,6 @@ class CsvWriterTest extends AbstractCsvTestCase
                 __DIR__.'/../Fixtures/testWrite.csv',
                 '',
             ),
-        );
-    }
-
-    /**
-     * @dataProvider providerGetSetUseBom
-     */
-    public function testGetSetUseBom($input,$expected)
-    {
-        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv',$this->writer->setUseBom($input));
-        $this->assertEquals($expected,$this->writer->getUseBom());
-    }
-
-    public function providerGetSetUseBom()
-    {
-        return array(
-            array(null,false),
-            array(0,false),
-            array('',false),
-            array(false,false),
-            array(1,true),
-            array(true,true),
         );
     }
 }

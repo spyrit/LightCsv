@@ -30,9 +30,8 @@ class CsvWriter extends AbstractCsv
      */
     public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false, $translit = 'translit')
     {
-        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $translit);
+        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $useBom, $translit);
         $this->fileHandlerMode = 'wb';
-        $this->setUseBom($useBom);
     }
 
     /**
@@ -48,44 +47,6 @@ class CsvWriter extends AbstractCsv
 
         return $this;
     }
-
-    /**
-     *
-     * @return bool
-     */
-    public function getUseBom()
-    {
-        return $this->useBom;
-    }
-
-    /**
-     *
-     * @param bool $useBom (BOM will be writed when opening the file)
-     *
-     * @return \Spyrit\LightCsv\CsvWriter
-     */
-    public function setUseBom($useBom)
-    {
-        $this->useBom = (bool) $useBom;
-
-        return $this;
-    }
-
-    /**
-     * Write UTF-8 BOM code if encoding is UTF-8 and useBom is set to true
-     *
-     * @return \Spyrit\LightCsv\CsvWriter
-     */
-    protected function writeBom()
-    {
-        if ($this->useBom && $this->encoding == 'UTF-8') {
-            // Write the UTF-8 BOM code
-            fwrite($this->fileHandler, "\xEF\xBB\xBF");
-        }
-
-        return $this;
-    }
-
 
     /**
      * get HTTP headers for streaming CSV file
@@ -114,7 +75,6 @@ class CsvWriter extends AbstractCsv
         foreach ($headers as $key => $value) {
             header($key.': '.$value);
         }
-
     }
     // @codeCoverageIgnoreEnd
 
@@ -136,10 +96,6 @@ class CsvWriter extends AbstractCsv
             // Escape enclosures
             $value = str_replace($this->enclosure, $this->escape.$this->enclosure, $value);
 
-            if ($this->encoding !== 'UTF-8') {
-                $value = $this->convertEncoding($value, 'UTF-8', $this->encoding);
-            }
-
             // Add delimiter
             if (!$first) {
                 $line .= $this->delimiter;
@@ -155,7 +111,7 @@ class CsvWriter extends AbstractCsv
         $line .= $this->eol;
 
         // Write to file
-        fwrite($fileHandler, $line);
+        fwrite($fileHandler, $this->convertEncoding($line, 'UTF-8', $this->encoding));
 
         return $this;
     }
