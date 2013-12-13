@@ -116,7 +116,7 @@ class CsvReaderTest extends AbstractCsvTestCase
                 3
             ),
             array(
-                array(';','"', 'CP1252', "\n", "\\", 'translit', false, false),
+                array(';','"', 'CP1252', "\r\n", "\\", 'translit', false, false),
                 __DIR__.'/../Fixtures/test2.csv',
                 4
             ),
@@ -171,7 +171,7 @@ class CsvReaderTest extends AbstractCsvTestCase
                 )
             ),
             array(
-                array(';','"', 'CP1252', "\n", "\\", 'translit', false, false),
+                array(';','"', 'CP1252', "\r\n", "\\", 'translit', false, false),
                 __DIR__.'/../Fixtures/test2.csv',
                 array(
                     array('nom','prénom','age'),
