@@ -304,18 +304,17 @@ abstract class AbstractCsv
 
         return $this;
     }
-    
+
     /**
      * Remove BOM in the provided string
-     * 
-     * @param string $str
+     *
+     * @param  string $str
      * @return string
      */
     protected function removeBom($str)
     {
-        return $str !== false && $this->useBom ? str_replace("\xEF\xBB\xBF",'',$str) : $str; 
+        return $str !== false && $this->useBom ? str_replace("\xEF\xBB\xBF",'',$str) : $str;
     }
-    
 
     /**
      *

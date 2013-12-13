@@ -46,15 +46,15 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
      *
      * Default Excel Reading configuration
      *
-     * @param string $delimiter      default = ;
-     * @param string $enclosure      default = "
-     * @param string $encoding       default = CP1252  default encoding if not detected (csv rows will be converted from this encoding)
-     * @param string $eol            default = "\r\n"
-     * @param string $escape         default = "\\"
-     * @param bool   $useBom         default = false (BOM will be removed when opening the file)
-     * @param string $translit       default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
+     * @param string $delimiter              default = ;
+     * @param string $enclosure              default = "
+     * @param string $encoding               default = CP1252  default encoding if not detected (csv rows will be converted from this encoding)
+     * @param string $eol                    default = "\r\n"
+     * @param string $escape                 default = "\\"
+     * @param bool   $useBom                 default = false (BOM will be removed when opening the file)
+     * @param string $translit               default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
      * @param bool   $forceEncodingDetection default = false
-     * @param bool   $skipEmptyLines default = false
+     * @param bool   $skipEmptyLines         default = false
      */
     public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false, $translit = 'translit', $forceEncodingDetection = false, $skipEmptyLines = false)
     {
@@ -115,6 +115,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     {
         parent::open($filename);
         $this->detectEncoding();
+
         return $this;
     }
 
@@ -131,7 +132,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
             }
         }
     }
-    
+
     /**
      *
      * @param  resource $fileHandler
@@ -219,7 +220,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     {
         $this->currentValues = $this->readLine($this->getFileHandler());
         $this->position++;
-        
+
         if ($this->skipEmptyLines && is_array($this->currentValues) && empty($this->currentValues)) {
             $this->next();
         }

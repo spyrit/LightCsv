@@ -153,7 +153,7 @@ class CsvReaderTest extends AbstractCsvTestCase
         while ($row = $this->reader->getRow()) {
             $actual2[] = $row;
         }
-        
+
         $this->assertEquals($expected, $actual1);
         $this->assertEquals($expected, $actual2);
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader', $this->reader->close());
