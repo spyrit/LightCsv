@@ -47,7 +47,7 @@ $reader = new CsvReader(';', '"', 'CP1252', "\r\n", "\\");
 $reader->open('test.csv');
 
 //Read each row
-foreach (reader as $row) {
+foreach ($reader as $row) {
     // do what you want with the current row array : $row
 }
 
