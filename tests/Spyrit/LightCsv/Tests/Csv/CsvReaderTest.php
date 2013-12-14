@@ -130,6 +130,16 @@ class CsvReaderTest extends AbstractCsvTestCase
                 __DIR__.'/../Fixtures/test4.csv',
                 4
             ),
+            array(
+                array(',', '"', 'UTF-8', "\n", "\\", true, 'translit', false, true),
+                __DIR__.'/../Fixtures/test5_bom.csv',
+                3
+            ),
+            array(
+                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                __DIR__.'/../Fixtures/test6.csv',
+                3
+            ),
         );
     }
 
@@ -213,6 +223,15 @@ class CsvReaderTest extends AbstractCsvTestCase
             array(
                 array(',', '"', 'UTF-8', "\n", "\\", true, 'translit', false, false),
                 __DIR__.'/../Fixtures/test5_bom.csv', //file UTF8 with BOM
+                array(
+                    array('nom', 'prénom', 'age'),
+                    array('Martin', 'Durand', '28'),
+                    array('Alain', 'Richard', '36'),
+                )
+            ),
+            array(
+                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                __DIR__.'/../Fixtures/test6.csv',
                 array(
                     array('nom', 'prénom', 'age'),
                     array('Martin', 'Durand', '28'),
