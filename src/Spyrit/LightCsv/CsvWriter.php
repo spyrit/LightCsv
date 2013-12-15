@@ -95,7 +95,7 @@ class CsvWriter extends AbstractCsv
         }, $values))
             // Add line ending
             .$this->eol;
-        
+
         // Write to file
         fwrite($fileHandler, $this->convertEncoding($line, 'UTF-8', $this->encoding));
 

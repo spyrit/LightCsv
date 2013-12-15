@@ -169,19 +169,19 @@ class AbstractCsvTest extends AbstractCsvTestCase
 
         return $this->structure;
     }
-    
+
     public function testOpenNewFile()
     {
         $file1 = __DIR__.'/../Fixtures/test1.csv';
         $file2 = __DIR__.'/../Fixtures/test2.csv';
-        
+
         $this->assertFalse($this->structure->isFileOpened());
         $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->open($file1));
         $this->assertEquals($file1, $this->structure->getFilename());
         $this->assertTrue($this->structure->isFileOpened());
         $fileHandler1 = $this->getFileHandlerValue($this->structure);
         $this->assertInternalType('resource', $fileHandler1);
-        
+
         $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->open($file2));
         $this->assertEquals($file2, $this->structure->getFilename());
         $this->assertTrue($this->structure->isFileOpened());

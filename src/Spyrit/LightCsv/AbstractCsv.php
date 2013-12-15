@@ -109,11 +109,11 @@ abstract class AbstractCsv
         if ($this->fileHandlerMode == 'rb' && !file_exists($filename)) {
             throw new \InvalidArgumentException('The file '.$filename.' does not exists.');
         }
-        
+
         if ($this->isFileOpened() && $filename != $this->filename) {
             $this->closeFile();
         }
-        
+
         $this->filename = $filename;
 
         return $this;
@@ -375,7 +375,7 @@ abstract class AbstractCsv
     /**
      *
      * check if a file is already opened
-     * 
+     *
      * @return boolean
      */
     public function isFileOpened()

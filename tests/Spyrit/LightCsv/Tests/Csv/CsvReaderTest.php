@@ -96,7 +96,7 @@ class CsvReaderTest extends AbstractCsvTestCase
     {
         $this->reader->next();
     }
-    
+
     /**
      * @expectedException \InvalidArgumentException
      */
