@@ -96,6 +96,14 @@ class CsvReaderTest extends AbstractCsvTestCase
     {
         $this->reader->next();
     }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testReadingFilenameInvalid()
+    {
+        $this->reader->open('foobar.csv');
+    }
 
     /**
      * @dataProvider providerCount

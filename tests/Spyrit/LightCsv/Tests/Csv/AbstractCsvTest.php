@@ -14,7 +14,7 @@ class AbstractCsvTest extends AbstractCsvTestCase
 {
     /**
      *
-     * @var Spyrit\LightCsv\AbstractCsv
+     * @var AbstractCsv
      */
     protected $structure;
 
@@ -162,10 +162,36 @@ class AbstractCsvTest extends AbstractCsvTestCase
 
     public function testOpen()
     {
+        $this->assertFalse($this->structure->isFileOpened());
         $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->open(__DIR__.'/../Fixtures/test1.csv'));
+        $this->assertTrue($this->structure->isFileOpened());
         $this->assertInternalType('resource', $this->getFileHandlerValue($this->structure));
 
         return $this->structure;
+    }
+    
+    public function testOpenNewFile()
+    {
+        $file1 = __DIR__.'/../Fixtures/test1.csv';
+        $file2 = __DIR__.'/../Fixtures/test2.csv';
+        
+        $this->assertFalse($this->structure->isFileOpened());
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->open($file1));
+        $this->assertEquals($file1, $this->structure->getFilename());
+        $this->assertTrue($this->structure->isFileOpened());
+        $fileHandler1 = $this->getFileHandlerValue($this->structure);
+        $this->assertInternalType('resource', $fileHandler1);
+        
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->open($file2));
+        $this->assertEquals($file2, $this->structure->getFilename());
+        $this->assertTrue($this->structure->isFileOpened());
+        $this->assertNotInternalType('resource', $fileHandler1);
+        $fileHandler2 = $this->getFileHandlerValue($this->structure);
+        $this->assertInternalType('resource', $fileHandler2);
+
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->close());
+        $this->assertFalse($this->structure->isFileOpened());
+        $this->assertNotInternalType('resource', $fileHandler2);
     }
 
     /**
@@ -189,7 +215,9 @@ class AbstractCsvTest extends AbstractCsvTestCase
      */
     public function testClose($structure)
     {
+        $this->assertTrue($structure->isFileOpened());
         $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $structure->close());
-        $this->assertNull($this->getFileHandlerValue($structure));
+        $this->assertFalse($structure->isFileOpened());
+        $this->assertNotInternalType('resource', $this->getFileHandlerValue($structure));
     }
 }

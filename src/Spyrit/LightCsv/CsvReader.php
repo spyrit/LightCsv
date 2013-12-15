@@ -151,7 +151,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
             $line = $this->convertEncoding($this->removeBom(fgets($fileHandler)), $this->detectedEncoding, 'UTF-8');
             if ($line !== false) {
                 $row = str_getcsv($line, $this->delimiter, $this->enclosure, $this->escape);
-                if ($this->skipEmptyLines && count(array_filter($row,function($var) {
+                if ($this->skipEmptyLines && count(array_filter($row, function($var) {
                     return $var !== false && $var !== null && $var !== '';
                 })) === 0) {
                     $row = false;
