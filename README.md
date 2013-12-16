@@ -15,7 +15,7 @@ Installation
 
 * add "[https://packagist.org/packages/spyrit/light-csv](spyrit/light-csv)" package to your composer.json file require section
 
-       php composer.phar require spyrit/light-csv:0.*
+        php composer.phar require spyrit/light-csv:0.*
 
 * install dependencies
     
