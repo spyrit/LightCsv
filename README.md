@@ -11,16 +11,21 @@ Installation
 
 * get composer http://getcomposer.org/ and install dependencies
 
-        curl -s https://getcomposer.org/installer | php
+```bash
+curl -s https://getcomposer.org/installer | php
+```
 
 * add "[https://packagist.org/packages/spyrit/light-csv](spyrit/light-csv)" package to your composer.json file require section
 
-        php composer.phar require spyrit/light-csv:0.*
+```bash
+php composer.phar require spyrit/light-csv:0.*
+```
 
 * install dependencies
-    
-        php composer.phar install
 
+```bash
+php composer.phar install
+```
 * include vendor/autoload.php
 
 How To
