@@ -89,9 +89,11 @@ class CsvWriter extends AbstractCsv
      */
     protected function write($fileHandler, $values)
     {
-        $line = implode($this->delimiter, array_map(function($var) {
+        $enclosure = $this->enclosure;
+        $escape = $this->escape;
+        $line = implode($this->delimiter, array_map(function($var) use ($enclosure, $escape) {
             // Escape enclosures and enclosed string
-            return $this->enclosure.str_replace($this->enclosure, $this->escape.$this->enclosure, $var).$this->enclosure;
+            return $enclosure.str_replace($enclosure, $escape.$enclosure, $var).$enclosure;
         }, $values))
             // Add line ending
             .$this->eol;
