@@ -3,21 +3,29 @@ Spyrit LightCSV
 
 [![Build Status](https://travis-ci.org/spyrit/LightCsv.png)](https://travis-ci.org/spyrit/LightCsv)
 
-A light and simple  CSV Reader/Writer PHP 5.3 Library
+A light and simple CSV Reader/Writer PHP 5.3 Library.
+Fully Tested, very memory efficient and able to parse/write CSV files that weigh 100 Mb.
 
 Installation
 ------------
 
 * get composer http://getcomposer.org/ and install dependencies
 
-        curl -s https://getcomposer.org/installer | php
+```bash
+curl -s https://getcomposer.org/installer | php
+```
 
-* add "spyrit/light-csv" package to your composer.json file require section
+* add "[https://packagist.org/packages/spyrit/light-csv](spyrit/light-csv)" package to your composer.json file require section
+
+```bash
+php composer.phar require spyrit/light-csv:0.*
+```
 
 * install dependencies
-    
-        php composer.phar install
 
+```bash
+php composer.phar install
+```
 * include vendor/autoload.php
 
 How To
@@ -41,7 +49,7 @@ Instanciate a new CSVReader with the following CSV parameters:
 use Spyrit\LightCsv\CsvReader;
 
 // create the reader
-$reader = new CsvReader(';', '"', 'CP1252', "\r\n", "\\");
+$reader = new CsvReader(';', '"', 'CP1252', "\r\n", "\\", false, 'translit', false, false);
 
 //Open the csv file to read
 $reader->open('test.csv');
@@ -71,7 +79,7 @@ Instanciate a new CSVWriter with the following CSV parameters:
 use Spyrit\LightCsv\CsvWriter;
 
 // create the writer
-$writer = new CsvWriter(';', '"', 'CP1252', "\r\n", "\\", false);
+$writer = new CsvWriter(';', '"', 'CP1252', "\r\n", "\\", false, 'translit');
 
 //Open the csv file to write
 $writer->open('test.csv');

@@ -142,31 +142,24 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
      */
     protected function readLine($fileHandler)
     {
-        $result = null;
+        $row = null;
         if (!is_resource($fileHandler)) {
             throw new \InvalidArgumentException('A valid file handler resource must be passed as parameter');
         }
 
         if (!feof($fileHandler)) {
-            $line = $this->convertEncoding($this->removeBom(fgets($fileHandler)), $this->detectedEncoding, 'UTF-8');
+            $line = $this->convertEncoding($this->position == 0 ? $this->removeBom(fgets($fileHandler)) : fgets($fileHandler), $this->detectedEncoding, 'UTF-8');
             if ($line !== false) {
                 $row = str_getcsv($line, $this->delimiter, $this->enclosure, $this->escape);
-                $result = array();
-                $empty = true;
-                foreach ($row as $value) {
-                    if (!empty($value)) {
-                        $empty = false;
-                    }
-                    $result[] = $value;
-                }
-
-                if ($this->skipEmptyLines && $empty) {
-                    $result = array();
+                if ($this->skipEmptyLines && count(array_filter($row, function($var) {
+                    return $var !== false && $var !== null && $var !== '';
+                })) === 0) {
+                    $row = false;
                 }
             }
         }
 
-        return $result;
+        return $row;
     }
 
     /**
@@ -194,10 +187,10 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     {
         $this->rewind();
     }
-    /*     * *************************************************************************** */
-    /*                   iterator interface methods                               */
-    /*     * *************************************************************************** */
 
+    /******************************************************************************/
+    /*                   iterator interface methods                               */
+    /******************************************************************************/
     /**
      *
      * @return array
@@ -221,7 +214,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
         $this->currentValues = $this->readLine($this->getFileHandler());
         $this->position++;
 
-        if ($this->skipEmptyLines && is_array($this->currentValues) && empty($this->currentValues)) {
+        if ($this->skipEmptyLines && $this->currentValues === false) {
             $this->next();
         }
     }
@@ -235,6 +228,9 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
         $this->position = 0;
         rewind($this->getFileHandler());
         $this->currentValues = $this->readLine($this->getFileHandler());
+        if ($this->skipEmptyLines && $this->currentValues === false) {
+            $this->next();
+        }
     }
 
     /**
@@ -245,10 +241,10 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     {
         return $this->currentValues !== null;
     }
-    /*     * *************************************************************************** */
-    /*                   countable interface methods                               */
-    /*     * *************************************************************************** */
 
+    /******************************************************************************/
+    /*                   countable interface methods                              */
+    /******************************************************************************/
     public function count()
     {
         if (!$this->isFileOpened()) {

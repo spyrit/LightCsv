@@ -118,6 +118,7 @@ class Converter
                 'ISO-8859-16',
                 'Windows-1251',
                 'Windows-1252',
+                'Windows-1254',
             );
 
             $encoding = mb_detect_encoding($str, $encodingList, true);

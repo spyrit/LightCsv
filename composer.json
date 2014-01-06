@@ -1,8 +1,8 @@
 {
     "name": "spyrit/light-csv",
-    "description": "Spyrit Light Csv reader and writer library",
+    "description": "Spyrit Light CSV reader and writer library",
     "type": "library",
-    "keywords": ["csv", "import", "export"],
+    "keywords": ["csv", "import", "export", "reader", "writer", "parser"],
     "authors": [
         {
             "name": "Charles SANQUER",
@@ -11,6 +11,7 @@
     ],
     "license": "LGPL-3.0+",
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=5.3.3",
         "ext-mbstring": "*"
@@ -19,6 +20,8 @@
         "ext-iconv": "*"
     },
     "require-dev": {
+        "symfony/stopwatch": "2.4.*",
+        "fzaninotto/faker": "1.3.*"
     },
     "autoload": {
         "psr-0": { "Spyrit": "src/" }

@@ -106,6 +106,14 @@ abstract class AbstractCsv
      */
     public function setFilename($filename)
     {
+        if ($this->fileHandlerMode == 'rb' && !file_exists($filename)) {
+            throw new \InvalidArgumentException('The file '.$filename.' does not exists.');
+        }
+
+        if ($this->isFileOpened() && $filename != $this->filename) {
+            $this->closeFile();
+        }
+
         $this->filename = $filename;
 
         return $this;
@@ -325,7 +333,7 @@ abstract class AbstractCsv
      */
     protected function convertEncoding($str, $from, $to)
     {
-        return $str !== false && $from != $to ? Converter::convertEncoding($str, $from, $to, $this->getTranslit()) : $str;
+        return $str !== false ? Converter::convertEncoding($str, $from, $to, $this->getTranslit()) : $str;
     }
 
     /**
@@ -338,10 +346,6 @@ abstract class AbstractCsv
     protected function openFile($mode = 'rb')
     {
         $mode = empty($mode) ? 'rb' : $mode;
-
-        if (is_null($this->filename) || $this->filename == '') {
-            throw new \InvalidArgumentException('the filename is not valid');
-        }
 
         $this->fileHandler = @fopen($this->filename, $mode);
         if ($this->fileHandler === false) {
@@ -370,9 +374,11 @@ abstract class AbstractCsv
 
     /**
      *
+     * check if a file is already opened
+     *
      * @return boolean
      */
-    protected function isFileOpened()
+    public function isFileOpened()
     {
         return is_resource($this->fileHandler);
     }
@@ -396,10 +402,7 @@ abstract class AbstractCsv
      */
     public function open($filename = null)
     {
-        if (!is_null($filename) && $filename != '') {
-            $this->setFilename($filename);
-        }
-
+        $this->setFilename($filename);
         $this->openFile($this->fileHandlerMode);
 
         return $this;
