@@ -1,6 +1,8 @@
 Spyrit LightCSV
 ===============
 
+[![Latest Stable Version](https://poser.pugx.org/spyrit/light-csv/v/stable.png)](https://packagist.org/packages/spyrit/light-csv)
+[![Latest Unstable Version](https://poser.pugx.org/spyrit/light-csv/v/unstable.png)](https://packagist.org/packages/spyrit/light-csv)
 [![Build Status](https://travis-ci.org/spyrit/LightCsv.png)](https://travis-ci.org/spyrit/LightCsv)
 
 A light and simple CSV Reader/Writer PHP 5.3 Library.
