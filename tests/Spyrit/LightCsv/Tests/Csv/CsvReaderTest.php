@@ -26,56 +26,6 @@ class CsvReaderTest extends AbstractCsvTestCase
     public function testConstruct()
     {
         $this->assertEquals('rb', $this->getFileHandlerModeValue($this->reader));
-        $this->assertEquals(';', $this->reader->getDelimiter());
-        $this->assertEquals('"', $this->reader->getEnclosure());
-        $this->assertEquals('CP1252', $this->reader->getEncoding());
-        $this->assertEquals("\r\n", $this->reader->getLineEndings());
-        $this->assertEquals("\\", $this->reader->getEscape());
-        $this->assertFalse($this->reader->getForceEncodingDetection());
-    }
-
-    /**
-     * @dataProvider providerGetSetForceEncodingDetection
-     */
-    public function testGetSetForceEncodingDetection($input, $expected)
-    {
-        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->reader->setForceEncodingDetection($input));
-        $this->assertEquals($expected, $this->reader->getForceEncodingDetection());
-    }
-
-    public function providerGetSetForceEncodingDetection()
-    {
-        return array(
-            array(null, false),
-            array(false, false),
-            array(true, true),
-            array(0, false),
-            array('0', false),
-            array(1, true),
-            array('1', true),
-        );
-    }
-
-    /**
-     * @dataProvider providerGetSetSkipEmptyLines
-     */
-    public function testGetSetSkipEmptyLines($input, $expected)
-    {
-        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->reader->setSkipEmptyLines($input));
-        $this->assertEquals($expected, $this->reader->getSkipEmptyLines());
-    }
-
-    public function providerGetSetSkipEmptyLines()
-    {
-        return array(
-            array(null, false),
-            array(false, false),
-            array(true, true),
-            array(0, false),
-            array('0', false),
-            array(1, true),
-            array('1', true),
-        );
     }
 
     /**
@@ -110,7 +60,7 @@ class CsvReaderTest extends AbstractCsvTestCase
      */
     public function testCount($options, $filename, $expected)
     {
-        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3], $options[4], $options[5], $options[6], $options[7], $options[8]);
+        $this->reader = new CsvReader($options);
         $this->reader->setFilename($filename);
         $this->assertEquals($expected, count($this->reader));
     }
@@ -119,32 +69,98 @@ class CsvReaderTest extends AbstractCsvTestCase
     {
         return array(
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, false),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test1.csv',
                 3
             ),
             array(
-                array(';', '"', 'CP1252', "\r\n", "\\", false, 'translit', false, false),
+                array(
+                    'delimiter' => ';', 
+                    'enclosure' => '"', 
+                    'encoding' => 'CP1252', 
+                    'eol' => "\r\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test2.csv',
                 4
             ),
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test3.csv',
                 3
             ),
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test4.csv',
                 4
             ),
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", true, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => true, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test5_bom.csv',
                 3
             ),
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test6.csv',
                 3
             ),
@@ -156,7 +172,7 @@ class CsvReaderTest extends AbstractCsvTestCase
      */
     public function testReading($options, $filename, $expected)
     {
-        $this->reader = new CsvReader($options[0], $options[1], $options[2], $options[3], $options[4], $options[5], $options[6], $options[7], $options[8]);
+        $this->reader = new CsvReader($options);
         $this->assertInstanceOf('Spyrit\LightCsv\CsvReader', $this->reader->open($filename));
 
         $actual1 = array();
@@ -180,8 +196,20 @@ class CsvReaderTest extends AbstractCsvTestCase
     public function providerReading()
     {
         return array(
+            //data set #0
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, false),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test1.csv',
                 array(
                     array('nom', 'prénom', 'age'),
@@ -189,8 +217,20 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Alain', 'Richard', '36'),
                 )
             ),
+            //data set #1
             array(
-                array(';', '"', 'CP1252', "\r\n", "\\", false, 'translit', false, false),
+                array(
+                    'delimiter' => ';', 
+                    'enclosure' => '"', 
+                    'encoding' => 'CP1252', 
+                    'eol' => "\r\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test2.csv',
                 array(
                     array('nom', 'prénom', 'age'),
@@ -199,8 +239,20 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Gauthier', 'Aurélie', '24'),
                 )
             ),
+            //data set #2
             array(
-                array(';', '"', '', "\r\n", "\\", false, 'translit', true, false),
+                array(
+                    'delimiter' => ';', 
+                    'enclosure' => '"', 
+                    'encoding' => '', 
+                    'eol' => "\r\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => true,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test2.csv',
                 array(
                     array('nom', 'prénom', 'age'),
@@ -209,8 +261,20 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Gauthier', 'Aurélie', '24'),
                 )
             ),
+            //data set #3
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => true, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test3.csv',
                 array(
                     array('nom', 'prénom', 'age'),
@@ -218,8 +282,20 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Alain', 'Richard', '36'),
                 )
             ),
+            //data set #4
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => true, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test4.csv',
                 array(
                     array('nom', 'prénom', 'age'),
@@ -228,8 +304,20 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Dupont', '', ''),
                 )
             ),
+            //data set #5
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", true, 'translit', false, false),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => true, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
                 __DIR__.'/../Fixtures/test5_bom.csv', //file UTF8 with BOM
                 array(
                     array('nom', 'prénom', 'age'),
@@ -237,8 +325,41 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Alain', 'Richard', '36'),
                 )
             ),
+            //data set #6
             array(
-                array(',', '"', 'UTF-8', "\n", "\\", false, 'translit', false, true),
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => false,
+                ),
+                __DIR__.'/../Fixtures/test6.csv',
+                array(
+                    array('nom', 'prénom', 'age'),
+                    array('Martin', 'Durand', '28'),
+                    array('Alain', '  Richard ', '36  '),
+                )
+            ),
+            //data set #7
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'use_bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detection' => false,
+                    'skip_empty_lines' => true,
+                    'trim' => true,
+                ),
                 __DIR__.'/../Fixtures/test6.csv',
                 array(
                     array('nom', 'prénom', 'age'),

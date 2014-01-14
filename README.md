@@ -44,12 +44,24 @@ Instanciate a new CSVReader with the following CSV parameters:
 * transliteration (default for Excel = null ) available options : 'translit', 'ignore', null
 * force encoding detection (default for Excel = false )
 * skip empty lines (default for Excel = false ) lines which all values are empty
+* trim (default = false for Excel) trim all values
 
 ```php
 use Spyrit\LightCsv\CsvReader;
 
 // create the reader
-$reader = new CsvReader(';', '"', 'CP1252', "\r\n", "\\", false, 'translit', false, false);
+$reader = new CsvReader(array(
+    'delimiter' => ';', 
+    'enclosure' => '"', 
+    'encoding' => 'CP1252', 
+    'eol' => "\r\n", 
+    'escape' => "\\", 
+    'use_bom' => false, 
+    'translit' => 'translit',
+    'force_encoding_detection' => false,
+    'skip_empty_lines' => false,
+    'trim' => false,
+));
 
 //Open the csv file to read
 $reader->open('test.csv');
@@ -74,12 +86,22 @@ Instanciate a new CSVWriter with the following CSV parameters:
 * escape character (default for Excel = "\\" )
 * UTF8 BOM (default false) force writing BOM if encoding is UTF-8
 * transliteration (default for Excel = null ) available options : 'translit', 'ignore', null
+* trim (default = false for Excel) trim all values
 
 ```php
 use Spyrit\LightCsv\CsvWriter;
 
 // create the writer
-$writer = new CsvWriter(';', '"', 'CP1252', "\r\n", "\\", false, 'translit');
+$writer = new CsvWriter(array(
+    'delimiter' => ';', 
+    'enclosure' => '"', 
+    'encoding' => 'CP1252', 
+    'eol' => "\r\n", 
+    'escape' => "\\", 
+    'use_bom' => false, 
+    'translit' => 'translit',
+    'trim' => false,
+));
 
 //Open the csv file to write
 $writer->open('test.csv');
@@ -129,7 +151,3 @@ GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with LightCSV.  If not, see <http://www.gnu.org/licenses/>.
-
-
-
-
