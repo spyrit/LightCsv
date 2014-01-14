@@ -21,7 +21,8 @@
     },
     "require-dev": {
         "symfony/stopwatch": "2.4.*",
-        "fzaninotto/faker": "1.3.*"
+        "fzaninotto/faker": "1.3.*",
+        "doctrine/inflector": "1.0.*"
     },
     "autoload": {
         "psr-0": { "Spyrit": "src/" }

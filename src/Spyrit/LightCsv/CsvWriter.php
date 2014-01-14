@@ -13,24 +13,23 @@ class CsvWriter extends AbstractCsv
 {
     /**
      *
-     * @var bool
-     */
-    protected $useBom = false;
-
-    /**
      * Default Excel Writing configuration
-     *
-     * @param string $delimiter default = ;
-     * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252 (date write to the csv will be converted to this encoding from UTF-8)
-     * @param string $eol       default = "\r\n"
-     * @param string $escape    default = "\\"
-     * @param bool   $useBom    default = false (BOM will be writed when opening the file)
-     * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
+     * 
+     * available options :
+     * - delimiter : (default = ';')  
+     * - enclosure : (default = '"')  
+     * - encoding : (default = 'CP1252')  
+     * - eol : (default = "\r\n")  
+     * - escape : (default = "\\")  
+     * - bom : (default = false)  add UTF8 BOM marker
+     * - translit : (default = 'translit')  iconv translit option possible values : 'translit', 'ignore', null
+     * - trim : (default = false) trim each values on each line
+     * 
+     * @param array $options Dialect Options to describe CSV file parameters
      */
-    public function __construct($delimiter = ';', $enclosure = '"', $encoding = 'CP1252', $eol = "\r\n", $escape = "\\", $useBom = false, $translit = 'translit')
+    public function __construct($options = array())
     {
-        parent::__construct($delimiter, $enclosure, $encoding, $eol, $escape, $useBom, $translit);
+        parent::__construct($options);
         $this->fileHandlerMode = 'wb';
     }
 
@@ -89,17 +88,18 @@ class CsvWriter extends AbstractCsv
      */
     protected function write($fileHandler, $values)
     {
-        $enclosure = $this->enclosure;
-        $escape = $this->escape;
-        $line = implode($this->delimiter, array_map(function($var) use ($enclosure, $escape) {
+        $enclosure = $this->dialect->getEnclosure();
+        $escape = $this->dialect->getEscape();
+        $trim = $this->dialect->getTrim();
+        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($enclosure, $escape, $trim) {
             // Escape enclosures and enclosed string
-            return $enclosure.str_replace($enclosure, $escape.$enclosure, $var).$enclosure;
+            return $enclosure.str_replace($enclosure, $escape.$enclosure, $trim ? trim($var) : $var).$enclosure;
         }, $values))
             // Add line ending
-            .$this->eol;
+            .$this->dialect->getLineEndings();
 
         // Write to file
-        fwrite($fileHandler, $this->convertEncoding($line, 'UTF-8', $this->encoding));
+        fwrite($fileHandler, $this->convertEncoding($line, 'UTF-8', $this->dialect->getEncoding()));
 
         return $this;
     }
