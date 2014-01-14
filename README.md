@@ -18,7 +18,7 @@ curl -s https://getcomposer.org/installer | php
 * add "[https://packagist.org/packages/spyrit/light-csv](spyrit/light-csv)" package to your composer.json file require section
 
 ```bash
-php composer.phar require spyrit/light-csv:0.*
+php composer.phar require spyrit/light-csv:1.0.*
 ```
 
 * install dependencies
