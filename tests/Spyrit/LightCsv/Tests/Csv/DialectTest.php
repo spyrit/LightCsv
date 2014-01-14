@@ -49,7 +49,7 @@ class DialectTest extends AbstractCsvTestCase
                     'escape' => "\\", 
                     'use_bom' => false, 
                     'translit' => 'translit',
-                    'force_encoding_detection' => false,
+                    'force_encoding_detect' => false,
                     'skip_empty_lines' => false,
                     'trim' => false,
                 ),
@@ -61,10 +61,10 @@ class DialectTest extends AbstractCsvTestCase
                     'encoding' => 'UTF-8', 
                     'eol' => "\n", 
                     'escape' => "\\", 
-                    'use_bom' => false, 
+                    'bom' => false, 
                     'translit' => 'translit',
-                    'force_encoding_detection' => false,
-                    'skip_empty_lines' => true,
+                    'force_encoding_detect' => false,
+                    'skip_empty' => true,
                     'trim' => true,
                 ),
                 array(
@@ -75,7 +75,7 @@ class DialectTest extends AbstractCsvTestCase
                     'escape' => "\\", 
                     'use_bom' => false, 
                     'translit' => 'translit',
-                    'force_encoding_detection' => false,
+                    'force_encoding_detect' => false,
                     'skip_empty_lines' => true,
                     'trim' => true,
                 ),
@@ -109,13 +109,13 @@ class DialectTest extends AbstractCsvTestCase
                     'escape' => "\\", 
                     'use_bom' => false, 
                     'translit' => 'translit',
-                    'force_encoding_detection' => false,
-                    'skip_empty_lines' => true,
+                    'force_encoding_detect' => false,
+                    'skip_empty_lines' => false,
                     'trim' => false,
                 ),
             ),
             array(
-                'createStandardDialect',
+                'createUnixDialect',
                 array(
                     'delimiter' => ',', 
                     'enclosure' => '"', 
@@ -124,9 +124,53 @@ class DialectTest extends AbstractCsvTestCase
                     'escape' => "\\", 
                     'use_bom' => false, 
                     'translit' => 'translit',
-                    'force_encoding_detection' => false,
-                    'skip_empty_lines' => true,
-                    'trim' => true,
+                    'force_encoding_detect' => false,
+                    'skip_empty_lines' => false,
+                    'trim' => false,
+                ),
+            ),
+        );
+    }
+    
+    /**
+     * @dataProvider providerGetDefaultOptions
+     */
+    public function testGetDefaultOptions($CSVType, $expected)
+    {
+        $this->assertEquals($expected, Dialect::getDialectDefaultOptions($CSVType));
+    }
+    
+    public function providerGetDefaultOptions()
+    {
+        return array(
+            array(
+                'excel',
+                array(
+                    'delimiter' => ';', 
+                    'enclosure' => '"', 
+                    'encoding' => 'CP1252', 
+                    'eol' => "\r\n", 
+                    'escape' => "\\", 
+                    'bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detect' => false,
+                    'skip_empty' => false,
+                    'trim' => false,
+                ),
+            ),
+            array(
+                'unix',
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detect' => false,
+                    'skip_empty' => false,
+                    'trim' => false,
                 ),
             ),
         );
@@ -292,15 +336,15 @@ class DialectTest extends AbstractCsvTestCase
     }
     
     /**
-     * @dataProvider providerGetSetForceEncodingDetection
+     * @dataProvider providerGetSetForceEncodingDetect
      */
-    public function testGetSetForceEncodingDetection($input, $expected)
+    public function testGetSetForceEncodingDetect($input, $expected)
     {
-        $this->assertInstanceOf('Spyrit\LightCsv\Dialect', $this->dialect->setForceEncodingDetection($input));
-        $this->assertEquals($expected, $this->dialect->getForceEncodingDetection());
+        $this->assertInstanceOf('Spyrit\LightCsv\Dialect', $this->dialect->setForceEncodingDetect($input));
+        $this->assertEquals($expected, $this->dialect->getForceEncodingDetect());
     }
 
-    public function providerGetSetForceEncodingDetection()
+    public function providerGetSetForceEncodingDetect()
     {
         return array(
             array(null, false),

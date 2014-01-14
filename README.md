@@ -56,10 +56,10 @@ $reader = new CsvReader(array(
     'encoding' => 'CP1252', 
     'eol' => "\r\n", 
     'escape' => "\\", 
-    'use_bom' => false, 
+    'bom' => false, 
     'translit' => 'translit',
-    'force_encoding_detection' => false,
-    'skip_empty_lines' => false,
+    'force_encoding_detect' => false,
+    'skip_empty' => false,
     'trim' => false,
 ));
 
@@ -98,7 +98,7 @@ $writer = new CsvWriter(array(
     'encoding' => 'CP1252', 
     'eol' => "\r\n", 
     'escape' => "\\", 
-    'use_bom' => false, 
+    'bom' => false, 
     'translit' => 'translit',
     'trim' => false,
 ));

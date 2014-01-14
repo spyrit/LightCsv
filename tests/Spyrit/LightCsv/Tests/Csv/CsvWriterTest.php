@@ -166,7 +166,7 @@ class CsvWriterTest extends AbstractCsvTestCase
             'encoding' => $options[0], 
             'eol' => "\n", 
             'escape' => "\\", 
-            'use_bom' => $options[1],
+            'bom' => $options[1],
         );
         
         $this->writer = new CsvWriter($realOptions);

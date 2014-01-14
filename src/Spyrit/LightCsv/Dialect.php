@@ -9,6 +9,33 @@ namespace Spyrit\LightCsv;
  */
 class Dialect
 {
+    protected static $defaultOptions = array(
+        'excel' => array(
+            'delimiter' => ';', 
+            'enclosure' => '"', 
+            'encoding' => 'CP1252', 
+            'eol' => "\r\n", 
+            'escape' => "\\", 
+            'bom' => false, 
+            'translit' => 'translit',
+            'force_encoding_detect' => false,
+            'skip_empty' => false,
+            'trim' => false,
+        ),
+        'unix' => array(
+            'delimiter' => ',', 
+            'enclosure' => '"', 
+            'encoding' => 'UTF-8', 
+            'eol' => "\n", 
+            'escape' => "\\", 
+            'bom' => false, 
+            'translit' => 'translit',
+            'force_encoding_detect' => false,
+            'skip_empty' => false,
+            'trim' => false,
+        ),
+    );
+    
     /**
      *
      * @var string
@@ -47,24 +74,6 @@ class Dialect
 
     /**
      *
-     * @var string
-     */
-    protected $filename;
-
-    /**
-     *
-     * @var string
-     */
-    protected $fileHandlerMode;
-
-    /**
-     *
-     * @var resource
-     */
-    protected $fileHandler;
-
-    /**
-     *
      * @var bool
      */
     protected $useBom = false;
@@ -83,31 +92,10 @@ class Dialect
 
     /**
      *
-     * @var string
-     */
-    protected $detectedEncoding;
-
-    /**
-     *
      * @var bool
      */
     protected $skipEmptyLines;
 
-    /**
-     *
-     * Default Excel configuration
-     *
-     * @param string $delimiter default = ;
-     * @param string $enclosure default = "
-     * @param string $encoding  default = CP1252 default encoding
-     * @param string $eol       default = "\r\n"
-     * @param string $escape    default = "\\"
-     * @param bool   $useBom    default = false (BOM will be handled when opening the file)
-     * @param string $translit  default = "translit" (iconv translit option possible values : 'translit', 'ignore', null)
-     */
-    
-    
-    
     /**
      * available options :
      * - delimiter : (default = ';')  
@@ -115,10 +103,10 @@ class Dialect
      * - encoding : (default = 'CP1252')  
      * - eol : (default = "\r\n")  
      * - escape : (default = "\\")  
-     * - use_bom : (default = false)  add UTF8 BOM marker
+     * - bom : (default = false)  add UTF8 BOM marker
      * - translit : (default = 'translit')  iconv translit option possible values : 'translit', 'ignore', null
-     * - force_encoding_detection : (default = false) 
-     * - skip_empty_lines : (default = false)  remove lines with empty values
+     * - force_encoding_detect : (default = false) 
+     * - skip_empty : (default = false)  remove lines with empty values
      * - trim : (default = false) trim each values on each line
      * 
      * @param array $options Dialect Options to describe CSV file parameters
@@ -132,18 +120,7 @@ class Dialect
             $cleanedOptions[strtolower($key)] = $value;
         }
         
-        $options = array_merge(array(
-            'delimiter' => ';', 
-            'enclosure' => '"', 
-            'encoding' => 'CP1252', 
-            'eol' => "\r\n", 
-            'escape' => "\\", 
-            'use_bom' => false, 
-            'translit' => 'translit',
-            'force_encoding_detection' => false,
-            'skip_empty_lines' => false,
-            'trim' => false,
-        ), $cleanedOptions);
+        $options = array_merge(static::getDialectDefaultOptions('excel'), $cleanedOptions);
         
         $this->setDelimiter($options['delimiter']);
         $this->setEnclosure($options['enclosure']);
@@ -151,12 +128,24 @@ class Dialect
         $this->setLineEndings($options['eol']);
         $this->setEscape($options['escape']);
         $this->setTranslit($options['translit']);
-        $this->setUseBom($options['use_bom']);
+        $this->setUseBom($options['bom']);
         $this->setTrim($options['trim']);
-        $this->setForceEncodingDetection($options['force_encoding_detection']);
-        $this->setSkipEmptyLines($options['skip_empty_lines']);
+        $this->setForceEncodingDetect($options['force_encoding_detect']);
+        $this->setSkipEmptyLines($options['skip_empty']);
     }
 
+    /**
+     * get Default CSV options for a specific CSV reader application like Excel
+     * 
+     * @param string $CSVType default = excel
+     * 
+     * @return array 
+     */
+    public static function getDialectDefaultOptions($CSVType = 'excel')
+    {
+        return isset(static::$defaultOptions[$CSVType]) ? static::$defaultOptions[$CSVType] : array();
+    }
+    
     /**
      * return a CSV Dialect for Excel
      * 
@@ -164,18 +153,7 @@ class Dialect
      */
     public static function createExcelDialect()
     {
-        return new self(array(
-            'delimiter' => ';', 
-            'enclosure' => '"', 
-            'encoding' => 'CP1252', 
-            'eol' => "\r\n", 
-            'escape' => "\\", 
-            'use_bom' => false, 
-            'translit' => 'translit',
-            'force_encoding_detection' => false,
-            'skip_empty_lines' => true,
-            'trim' => false,
-        ));
+        return new self(static::getDialectDefaultOptions('excel'));
     }
     
     /**
@@ -183,20 +161,9 @@ class Dialect
      * 
      * @return Dialect
      */
-    public static function createStandardDialect()
+    public static function createUnixDialect()
     {
-        return new self(array(
-            'delimiter' => ',', 
-            'enclosure' => '"', 
-            'encoding' => 'UTF-8', 
-            'eol' => "\n", 
-            'escape' => "\\", 
-            'use_bom' => false, 
-            'translit' => 'translit',
-            'force_encoding_detection' => false,
-            'skip_empty_lines' => true,
-            'trim' => true,
-        ));
+        return new self(static::getDialectDefaultOptions('unix'));
     }
     
     /**
@@ -395,19 +362,19 @@ class Dialect
      *
      * @return bool
      */
-    public function getForceEncodingDetection()
+    public function getForceEncodingDetect()
     {
-        return $this->forceEncodingDetection;
+        return $this->forceEncodingDetect;
     }
 
     /**
      *
-     * @param  bool                       $forceEncodingDetection
+     * @param  bool                       $forceEncodingDetect
      * @return \Spyrit\LightCsv\Dialect
      */
-    public function setForceEncodingDetection($forceEncodingDetection)
+    public function setForceEncodingDetect($forceEncodingDetect)
     {
-        $this->forceEncodingDetection = (bool) $forceEncodingDetection;
+        $this->forceEncodingDetect = (bool) $forceEncodingDetect;
 
         return $this;
     }

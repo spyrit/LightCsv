@@ -34,7 +34,19 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
      *
      * Default Excel Reading configuration
      * 
-     * @param Dialect|array $options default = array()
+     * available options :
+     * - delimiter : (default = ';')  
+     * - enclosure : (default = '"')  
+     * - encoding : (default = 'CP1252')  
+     * - eol : (default = "\r\n")  
+     * - escape : (default = "\\")  
+     * - bom : (default = false)  add UTF8 BOM marker
+     * - translit : (default = 'translit')  iconv translit option possible values : 'translit', 'ignore', null
+     * - force_encoding_detect : (default = false) 
+     * - skip_empty : (default = false)  remove lines with empty values
+     * - trim : (default = false) trim each values on each line
+     * 
+     * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())
     {
@@ -61,7 +73,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     protected function detectEncoding()
     {
         $this->detectedEncoding = $this->dialect->getEncoding();
-        if ($this->dialect->getForceEncodingDetection() || empty($this->dialect->detectedEncoding)) {
+        if ($this->dialect->getForceEncodingDetect() || empty($this->dialect->detectedEncoding)) {
             $text = file_get_contents($this->getFilename());
             if ($text !== false) {
                 $this->detectedEncoding = Converter::detectEncoding($text, $this->dialect->getEncoding());

@@ -15,7 +15,17 @@ class CsvWriter extends AbstractCsv
      *
      * Default Excel Writing configuration
      * 
-     * @param Dialect|array $options default = array()
+     * available options :
+     * - delimiter : (default = ';')  
+     * - enclosure : (default = '"')  
+     * - encoding : (default = 'CP1252')  
+     * - eol : (default = "\r\n")  
+     * - escape : (default = "\\")  
+     * - bom : (default = false)  add UTF8 BOM marker
+     * - translit : (default = 'translit')  iconv translit option possible values : 'translit', 'ignore', null
+     * - trim : (default = false) trim each values on each line
+     * 
+     * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())
     {
