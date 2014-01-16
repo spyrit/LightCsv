@@ -2,7 +2,7 @@
 
 namespace Spyrit\LightCsv\Tests\Csv;
 
-use Spyrit\LightCsv\Tests\Test\AbstractCsvTestCase;
+use Spyrit\LightCsv\Tests\AbstractCsvTestCase;
 use Spyrit\LightCsv\CsvReader;
 
 /**

@@ -4,7 +4,7 @@ namespace Spyrit\LightCsv\Tests\Csv;
 
 use Doctrine\Common\Inflector\Inflector;
 use Spyrit\LightCsv\Dialect;
-use Spyrit\LightCsv\Tests\Test\AbstractCsvTestCase;
+use Spyrit\LightCsv\Tests\AbstractCsvTestCase;
 
 /**
  * DialectTest

@@ -1,6 +1,6 @@
 <?php
 
-namespace Spyrit\LightCsv\Tests\Test;
+namespace Spyrit\LightCsv\Tests;
 
 use Spyrit\LightCsv\AbstractCsv;
 
