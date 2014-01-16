@@ -3,6 +3,7 @@
 namespace Spyrit\LightCsv\Tests\Csv;
 
 use Spyrit\LightCsv\AbstractCsv;
+use Spyrit\LightCsv\Dialect;
 use Spyrit\LightCsv\Tests\AbstractCsvTestCase;
 
 /**
@@ -23,6 +24,22 @@ class AbstractCsvTest extends AbstractCsvTestCase
         $this->structure = $this->getMockForAbstractClass('Spyrit\LightCsv\AbstractCsv');
     }
 
+    /**
+     * @dataProvider providerGetSetDialect
+     */
+    public function testGetSetDialect($input)
+    {
+        $this->assertInstanceOf('Spyrit\LightCsv\AbstractCsv', $this->structure->setDialect($input));
+        $this->assertInstanceOf('\\Spyrit\\LightCsv\\Dialect', $this->structure->getDialect());
+    }
+
+    public function providerGetSetDialect()
+    {
+        return array(
+            array(new Dialect()),
+        );
+    }
+    
     /**
      * @dataProvider providerGetSetFilename
      */

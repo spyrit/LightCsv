@@ -52,6 +52,21 @@ abstract class AbstractCsv
     }
 
     /**
+     * 
+     * @return Dialect
+     */
+    public function getDialect()
+    {
+        return $this->dialect;
+    }
+
+    public function setDialect(Dialect $dialect)
+    {
+        $this->dialect = $dialect;
+        return $this;
+    }
+        
+    /**
      *
      * @param  string                       $filename
      * @return \Spyrit\LightCsv\AbstractCsv
