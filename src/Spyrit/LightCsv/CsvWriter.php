@@ -91,9 +91,33 @@ class CsvWriter extends AbstractCsv
         $enclosure = $this->dialect->getEnclosure();
         $escape = $this->dialect->getEscape();
         $trim = $this->dialect->getTrim();
-        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($enclosure, $escape, $trim) {
+        $enclosingMode = $this->dialect->getEnclosingMode();
+        $escapeDouble = $this->dialect->getEscapeDouble();
+        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($enclosure, $escape, $trim, $enclosingMode, $escapeDouble) {
             // Escape enclosures and enclosed string
-            return $enclosure.str_replace($enclosure, $escape.$enclosure, $trim ? trim($var) : $var).$enclosure;
+            if ($escapeDouble) {
+                // double enclosure
+                $searches = array($enclosure);
+                $replacements = array($enclosure.$enclosure);
+            } else {
+                // use escape character
+                $searches = array($enclosure);
+                $replacements = array($escape.$enclosure);
+            }
+            $clean = str_replace($searches, $replacements, $trim ? trim($var) : $var);
+            
+            if (
+                $enclosingMode === Dialect::ENCLOSING_ALL || 
+                ($enclosingMode === Dialect::ENCLOSING_MINIMAL && preg_match('/['.preg_quote($this->dialect->getEnclosure().$this->dialect->getDelimiter().$this->dialect->getLineEndings(), '/').']+/', $clean)) ||
+                ($enclosingMode === Dialect::ENCLOSING_NONNUMERIC && preg_match('/[^\d\.]+/', $clean)) 
+            )
+            {
+                $var = $enclosure.$clean.$enclosure;
+            } else {
+                $var = $clean;
+            }
+            
+            return $var;
         }, $values))
             // Add line ending
             .$this->dialect->getLineEndings();

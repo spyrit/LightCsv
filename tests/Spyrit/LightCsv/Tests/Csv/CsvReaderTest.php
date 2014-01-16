@@ -408,6 +408,27 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('Paul', 'Henri', '"4\'80""','22'),
                 )
             ),
+            //data set #9
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detect' => false,
+                    'skip_empty' => false,
+                    'trim' => false,
+                ),
+                __DIR__.'/../Fixtures/test8.csv',
+                array(
+                    array('nom', 'prénom', 'desc', 'age'),
+                    array('Martin', 'Durand', 'test" a', '28'),
+                    array('Alain', 'Richard', 'test"" b', '36'),
+                )
+            ),
         );
     }
 }

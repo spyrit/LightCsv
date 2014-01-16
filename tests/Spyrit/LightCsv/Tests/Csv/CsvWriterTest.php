@@ -2,8 +2,9 @@
 
 namespace Spyrit\LightCsv\Tests\Csv;
 
-use Spyrit\LightCsv\Tests\AbstractCsvTestCase;
 use Spyrit\LightCsv\CsvWriter;
+use Spyrit\LightCsv\Dialect;
+use Spyrit\LightCsv\Tests\AbstractCsvTestCase;
 
 /**
  * CsvWriterTest
@@ -14,7 +15,7 @@ class CsvWriterTest extends AbstractCsvTestCase
 {
     /**
      *
-     * @var Spyrit\LightCsv\CsvWriter
+     * @var CsvWriter
      */
     protected $writer;
 
@@ -59,10 +60,54 @@ class CsvWriterTest extends AbstractCsvTestCase
                     'encoding' => 'UTF-8', 
                     'eol' => "\n", 
                     'escape' => "\\", 
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => true,
                 ),
                 __DIR__.'/../Fixtures/testWrite0.csv',
-                array('Martin', 'Durand', '28'),
-                '"Martin","Durand","28"'."\n",
+                array('Martin', 'Durand', 'test " abc', '28,5'),
+                'Martin,Durand,"test "" abc","28,5"'."\n",
+            ),
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => false,
+                ),
+                __DIR__.'/../Fixtures/testWrite0.csv',
+                array('Martin', 'Durand', 'test " abc','28,5'),
+                'Martin,Durand,"test \" abc","28,5"'."\n",
+            ),
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'enclosing_mode' => Dialect::ENCLOSING_ALL,
+                    'escape_double' => true,
+                ),
+                __DIR__.'/../Fixtures/testWrite0.csv',
+                array('Martin', 'Durand', '28.5'),
+                '"Martin","Durand","28.5"'."\n",
+            ),
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'enclosing_mode' => Dialect::ENCLOSING_NONNUMERIC,
+                    'escape_double' => true,
+                ),
+                __DIR__.'/../Fixtures/testWrite0.csv',
+                array('Martin', 'Durand', '28.5'),
+                '"Martin","Durand",28.5'."\n",
             ),
             array(
                 array(
@@ -72,10 +117,12 @@ class CsvWriterTest extends AbstractCsvTestCase
                     'eol' => "\n", 
                     'escape' => "\\", 
                     'trim' => true,
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => true,
                 ),
                 __DIR__.'/../Fixtures/testWrite1.csv',
-                array('  Martin ', 'Durand  ', '  28'),
-                '"Martin","Durand","28"'."\n",
+                array('  Martin ', 'Durand  ', '  28,5'),
+                'Martin,Durand,"28,5"'."\n",
             ),
             array(
                 array(
@@ -84,10 +131,12 @@ class CsvWriterTest extends AbstractCsvTestCase
                     'encoding' => 'CP1252', 
                     'eol' => "\r\n", 
                     'escape' => "\\", 
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => true,
                 ),
                 __DIR__.'/../Fixtures/testWrite2.csv',
                 array('Gauthier', 'Aurélie', '24'),
-                mb_convert_encoding('"Gauthier";"Aurélie";"24"'."\r\n", 'CP1252', 'UTF-8'),
+                mb_convert_encoding('Gauthier;Aurélie;24'."\r\n", 'CP1252', 'UTF-8'),
             ),
         );
     }
@@ -116,11 +165,14 @@ class CsvWriterTest extends AbstractCsvTestCase
     public function providerWritingRows()
     {
         return array(
+            // Data set #0
             array(
                 array(
                     'delimiter' => ',', 
                     'enclosure' => '"', 
                     'encoding' => 'UTF-8', 
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => true,
                     'eol' => "\n", 
                     'escape' => "\\", 
                 ),
@@ -130,13 +182,18 @@ class CsvWriterTest extends AbstractCsvTestCase
                     array('Martin', 'Durand', '28,5'),
                     array('Alain', 'Richard', '36'),
                 ),
-                '"nom","prénom","age"'."\n".'"Martin","Durand","28,5"'."\n".'"Alain","Richard","36"'."\n",
+                'nom,prénom,age'."\n".
+                'Martin,Durand,"28,5"'."\n".
+                'Alain,Richard,36'."\n",
             ),
+            // Data set #1
             array(
                 array(
                     'delimiter' => ',', 
                     'enclosure' => '"', 
                     'encoding' => 'UTF-8', 
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => true,
                     'eol' => "\n", 
                     'escape' => "\\", 
                 ),
@@ -144,10 +201,13 @@ class CsvWriterTest extends AbstractCsvTestCase
                 array(
                     array('nom', 'prénom', 'age','desc'),
                     array('Martin', 'Durand', '28', '"5\'10""'),
-                    array('Alain', 'Richard', '36', '"5\'30""'),
+                    array('Alain', 'Richard', '36,5', '"5\'30""'),
                 ),
-                '"nom","prénom","age","desc"'."\n".'"Martin","Durand","28","\"5\'10\"\""'."\n".'"Alain","Richard","36","\"5\'30\"\""'."\n",
+                'nom,prénom,age,desc'."\n".
+                'Martin,Durand,28,"""5\'10"""""'."\n".
+                'Alain,Richard,"36,5","""5\'30"""""'."\n",
             ),
+            // Data set #2
             array(
                 array(
                     'delimiter' => ',', 
@@ -155,6 +215,8 @@ class CsvWriterTest extends AbstractCsvTestCase
                     'encoding' => 'UTF-8', 
                     'eol' => "\n", 
                     'escape' => "\\", 
+                    'enclosing_mode' => Dialect::ENCLOSING_MINIMAL,
+                    'escape_double' => false,
                 ),
                 __DIR__.'/../Fixtures/testWrite4.csv',
                 array(
@@ -163,7 +225,10 @@ class CsvWriterTest extends AbstractCsvTestCase
  tall'),
                     array('Alain', 'Richard', '36', '"5\'30""'),
                 ),
-                '"nom","prénom","age","desc"'."\n".'"Martin","Durand","28,5","\"5\'10\"\"'."\n".' tall"'."\n".'"Alain","Richard","36","\"5\'30\"\""'."\n",
+                'nom,prénom,age,desc'."\n".
+                'Martin,Durand,"28,5","\"5\'10\"\"'."\n".
+                ' tall"'."\n".
+                'Alain,Richard,36,"\"5\'30\"\""'."\n",
             ),
         );
     }

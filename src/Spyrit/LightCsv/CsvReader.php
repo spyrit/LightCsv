@@ -112,7 +112,7 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
                 $row = array_map(function($var) use ($enclosure, $escape, $trim, $translit, $detectedEncoding) {
                     // workaround when escape char is not equals to double quote
                     if ($enclosure === '"' && $escape !== $enclosure) {
-                        $var = str_replace($escape.$enclosure, $enclosure.$enclosure, $var);
+                        $var = str_replace($escape.$enclosure, $enclosure, $var);
                     }
 
                     $var = Converter::convertEncoding($var, $detectedEncoding, 'UTF-8', $translit);
