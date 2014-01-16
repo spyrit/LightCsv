@@ -164,6 +164,23 @@ class CsvReaderTest extends AbstractCsvTestCase
                 __DIR__.'/../Fixtures/test6.csv',
                 3
             ),
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'double_enclosure' => true,
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detect' => false,
+                    'skip_empty' => false,
+                    'trim' => false,
+                ),
+                __DIR__.'/../Fixtures/test7.csv',
+                4
+            ),
         );
     }
 
@@ -365,6 +382,30 @@ class CsvReaderTest extends AbstractCsvTestCase
                     array('nom', 'prénom', 'age'),
                     array('Martin', 'Durand', '28'),
                     array('Alain', 'Richard', '36'),
+                )
+            ),
+            //data set #8
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'double_enclosure' => true,
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                    'bom' => false, 
+                    'translit' => 'translit',
+                    'force_encoding_detect' => false,
+                    'skip_empty' => false,
+                    'trim' => false,
+                ),
+                __DIR__.'/../Fixtures/test7.csv',
+                array(
+                    array('nom', 'prénom', 'desc', 'age'),
+                    array('Martin', 'Durand
+ test', '"5\'10""', '28'),
+                    array('Alain', 'Richard', '"5\'30""', '36'),
+                    array('Paul', 'Henri', '"4\'80""','22'),
                 )
             ),
         );

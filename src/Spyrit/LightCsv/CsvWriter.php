@@ -100,7 +100,7 @@ class CsvWriter extends AbstractCsv
 
         // Write to file
         fwrite($fileHandler, $this->convertEncoding($line, 'UTF-8', $this->dialect->getEncoding()));
-
+        
         return $this;
     }
 

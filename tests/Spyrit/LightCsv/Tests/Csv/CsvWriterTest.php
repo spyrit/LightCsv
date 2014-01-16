@@ -60,7 +60,7 @@ class CsvWriterTest extends AbstractCsvTestCase
                     'eol' => "\n", 
                     'escape' => "\\", 
                 ),
-                __DIR__.'/../Fixtures/testWrite.csv',
+                __DIR__.'/../Fixtures/testWrite0.csv',
                 array('Martin', 'Durand', '28'),
                 '"Martin","Durand","28"'."\n",
             ),
@@ -124,13 +124,46 @@ class CsvWriterTest extends AbstractCsvTestCase
                     'eol' => "\n", 
                     'escape' => "\\", 
                 ),
-                __DIR__.'/../Fixtures/testWrite.csv',
+                __DIR__.'/../Fixtures/testWrite3.csv',
                 array(
                     array('nom', 'prénom', 'age'),
-                    array('Martin', 'Durand', '28'),
+                    array('Martin', 'Durand', '28,5'),
                     array('Alain', 'Richard', '36'),
                 ),
-                '"nom","prénom","age"'."\n".'"Martin","Durand","28"'."\n".'"Alain","Richard","36"'."\n",
+                '"nom","prénom","age"'."\n".'"Martin","Durand","28,5"'."\n".'"Alain","Richard","36"'."\n",
+            ),
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                ),
+                __DIR__.'/../Fixtures/testWrite4.csv',
+                array(
+                    array('nom', 'prénom', 'age','desc'),
+                    array('Martin', 'Durand', '28', '"5\'10""'),
+                    array('Alain', 'Richard', '36', '"5\'30""'),
+                ),
+                '"nom","prénom","age","desc"'."\n".'"Martin","Durand","28","\"5\'10\"\""'."\n".'"Alain","Richard","36","\"5\'30\"\""'."\n",
+            ),
+            array(
+                array(
+                    'delimiter' => ',', 
+                    'enclosure' => '"', 
+                    'encoding' => 'UTF-8', 
+                    'eol' => "\n", 
+                    'escape' => "\\", 
+                ),
+                __DIR__.'/../Fixtures/testWrite4.csv',
+                array(
+                    array('nom', 'prénom', 'age','desc'),
+                    array('Martin', 'Durand', '28,5', '"5\'10""
+ tall'),
+                    array('Alain', 'Richard', '36', '"5\'30""'),
+                ),
+                '"nom","prénom","age","desc"'."\n".'"Martin","Durand","28,5","\"5\'10\"\"'."\n".' tall"'."\n".'"Alain","Richard","36","\"5\'30\"\""'."\n",
             ),
         );
     }
@@ -185,17 +218,17 @@ class CsvWriterTest extends AbstractCsvTestCase
         return array(
             array(
                 array('UTF-8', true),
-                __DIR__.'/../Fixtures/testWrite.csv',
+                __DIR__.'/../Fixtures/testWriteBom1.csv',
                 "\xEF\xBB\xBF",
             ),
             array(
                 array('UTF-8', false),
-                __DIR__.'/../Fixtures/testWrite.csv',
+                __DIR__.'/../Fixtures/testWriteBom2.csv',
                 '',
             ),
             array(
                 array('CP1252', true),
-                __DIR__.'/../Fixtures/testWrite.csv',
+                __DIR__.'/../Fixtures/testWriteBom3.csv',
                 '',
             ),
         );

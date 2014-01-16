@@ -96,12 +96,29 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
         }
 
         if (!feof($fileHandler)) {
-            $line = $this->convertEncoding($this->position == 0 ? $this->removeBom(fgets($fileHandler)) : fgets($fileHandler), $this->detectedEncoding, 'UTF-8');
+            $enclosure = $this->dialect->getEnclosure();
+            $escape = $this->dialect->getEscape();
+            $line = fgetcsv($fileHandler, null, $this->dialect->getDelimiter(), $enclosure, $escape);
+                   
             if ($line !== false) {
-                $row = str_getcsv($line, $this->dialect->getDelimiter(), $this->dialect->getEnclosure(), $this->dialect->getEscape());
-                if ($this->dialect->getTrim()) {
-                    $row = array_map('trim', $row);
+                $trim = $this->dialect->getTrim();
+                $translit = $this->dialect->getTranslit();
+                $detectedEncoding = $this->detectedEncoding;
+                
+                if ($this->position == 0) {
+                    $line[0] = $this->removeBom($line[0]);
                 }
+                
+                $row = array_map(function($var) use ($enclosure, $escape, $trim, $translit, $detectedEncoding) {
+                    // workaround when escape char is not equals to double quote
+                    if ($enclosure === '"' && $escape !== $enclosure) {
+                        $var = str_replace($escape.$enclosure, $enclosure.$enclosure, $var);
+                    }
+
+                    $var = Converter::convertEncoding($var, $detectedEncoding, 'UTF-8', $translit);
+                    return $trim ? trim($var) : $var;
+                }, $line);
+                
                 if ($this->dialect->getSkipEmptyLines() && count(array_filter($row, function($var) {
                     return $var !== false && $var !== null && $var !== '';
                 })) === 0) {
@@ -205,21 +222,24 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
         $count = 0;
         rewind($this->getFileHandler());
 
+        $enclosure = $this->dialect->getEnclosure();
+        $escape = $this->dialect->getEscape();
+        $delimiter = $this->dialect->getDelimiter();
+        
         if ($this->dialect->getSkipEmptyLines()) {
-            // empty row pattern without alphanumeric
-            $pattern = '/(('.$this->dialect->getEnclosure().$this->dialect->getEnclosure().')?'.$this->dialect->getDelimiter().')+'.$this->dialect->getLineEndings().'/';
-            $patternAlphaNum = '([[:alnum:]]+)';
-
             while (!feof($this->getFileHandler())) {
-                $line = fgets($this->getFileHandler());
-                if ($line !== null && $line != '' && $line !== $this->dialect->getLineEndings() && !(preg_match($pattern, $line) && !preg_match($patternAlphaNum, $line))) {
+                $line = fgetcsv($this->getFileHandler(), null, $delimiter, $enclosure, $escape);
+                if (!empty($line) && count(array_filter($line, function($var) {
+                    // empty row pattern without alphanumeric
+                    return $var !== false && $var !== null && $var !== '' && preg_match('([[:alnum:]]+)', $var);
+                })) !== 0) {
                     $count++;
                 }
             }
         } else {
             while (!feof($this->getFileHandler())) {
-                $line = fgets($this->getFileHandler());
-                if ($line !== null && $line != '') {
+                $line = fgetcsv($this->getFileHandler(), null, $delimiter, $enclosure, $escape);
+                if (!empty($line)) {
                     $count++;
                 }
             }

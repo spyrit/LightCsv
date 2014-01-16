@@ -27,7 +27,7 @@ class Dialect
             'enclosure' => '"', 
             'encoding' => 'UTF-8', 
             'eol' => "\n", 
-            'escape' => "\\", 
+            'escape' => "\\",
             'bom' => false, 
             'translit' => 'translit',
             'force_encoding_detect' => false,
