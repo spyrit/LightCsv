@@ -25,6 +25,8 @@ class CsvWriter extends AbstractCsv
      * - translit : (default = 'translit')  iconv translit option possible values : 'translit', 'ignore', null
      * - trim : (default = false) trim each values on each line
      * 
+     * N.B. : Be careful, the option 'trim' decrease significantly the performances
+     * 
      * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())
@@ -88,19 +90,45 @@ class CsvWriter extends AbstractCsv
      */
     protected function write($fileHandler, $values)
     {
+        $delimiter = $this->dialect->getDelimiter();
         $enclosure = $this->dialect->getEnclosure();
+        $eol = $this->dialect->getLineEndings();
         $escape = $this->dialect->getEscape();
         $trim = $this->dialect->getTrim();
-        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($enclosure, $escape, $trim) {
+        $enclosingMode = $this->dialect->getEnclosingMode();
+        $escapeDouble = $this->dialect->getEscapeDouble();
+        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($delimiter, $enclosure, $eol, $escape, $trim, $enclosingMode, $escapeDouble) {
             // Escape enclosures and enclosed string
-            return $enclosure.str_replace($enclosure, $escape.$enclosure, $trim ? trim($var) : $var).$enclosure;
+            if ($escapeDouble) {
+                // double enclosure
+                $searches = array($enclosure);
+                $replacements = array($enclosure.$enclosure);
+            } else {
+                // use escape character
+                $searches = array($enclosure);
+                $replacements = array($escape.$enclosure);
+            }
+            $clean = str_replace($searches, $replacements, $trim ? trim($var) : $var);
+            
+            if (
+                $enclosingMode === Dialect::ENCLOSING_ALL || 
+                ($enclosingMode === Dialect::ENCLOSING_MINIMAL && preg_match('/['.preg_quote($enclosure.$delimiter.$eol, '/').']+/', $clean)) ||
+                ($enclosingMode === Dialect::ENCLOSING_NONNUMERIC && preg_match('/[^\d\.]+/', $clean)) 
+            )
+            {
+                $var = $enclosure.$clean.$enclosure;
+            } else {
+                $var = $clean;
+            }
+            
+            return $var;
         }, $values))
             // Add line ending
             .$this->dialect->getLineEndings();
 
         // Write to file
         fwrite($fileHandler, $this->convertEncoding($line, 'UTF-8', $this->dialect->getEncoding()));
-
+        
         return $this;
     }
 
@@ -123,7 +151,7 @@ class CsvWriter extends AbstractCsv
     /**
      * write CSV rows from a PHP arrays
      *
-     * @param array rows
+     * @param array rows (multiple arrays of values)
      *
      * @return \Spyrit\LightCsv\CsvWriter
      */

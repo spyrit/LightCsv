@@ -9,13 +9,19 @@ namespace Spyrit\LightCsv;
  */
 class Dialect
 {
+    const ENCLOSING_ALL = 'all';
+    const ENCLOSING_MINIMAL = 'minimal';
+    const ENCLOSING_NONNUMERIC = 'nonnumeric';
+    
     protected static $defaultOptions = array(
         'excel' => array(
             'delimiter' => ';', 
             'enclosure' => '"', 
+            'enclosing_mode' => 'minimal',
             'encoding' => 'CP1252', 
             'eol' => "\r\n", 
             'escape' => "\\", 
+            'escape_double' => true,
             'bom' => false, 
             'translit' => 'translit',
             'force_encoding_detect' => false,
@@ -25,9 +31,11 @@ class Dialect
         'unix' => array(
             'delimiter' => ',', 
             'enclosure' => '"', 
+            'enclosing_mode' => 'minimal',
             'encoding' => 'UTF-8', 
             'eol' => "\n", 
-            'escape' => "\\", 
+            'escape' => "\\",
+            'escape_double' => true,
             'bom' => false, 
             'translit' => 'translit',
             'force_encoding_detect' => false,
@@ -58,6 +66,12 @@ class Dialect
      *
      * @var string
      */
+    protected $enclosingMode;
+    
+    /**
+     *
+     * @var string
+     */
     protected $enclosure;
 
     /**
@@ -66,6 +80,12 @@ class Dialect
      */
     protected $escape;
 
+    /**
+     *
+     * @var bool
+     */
+    protected $escapeDouble;
+    
     /**
      *
      * @var string
@@ -109,6 +129,8 @@ class Dialect
      * - skip_empty : (default = false)  remove lines with empty values
      * - trim : (default = false) trim each values on each line
      * 
+     * N.B. : Be careful, the options 'force_encoding_detect', 'skip_empty' and 'trim' decrease significantly the performances
+     * 
      * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())
@@ -125,8 +147,11 @@ class Dialect
         $this->setDelimiter($options['delimiter']);
         $this->setEnclosure($options['enclosure']);
         $this->setEncoding($options['encoding']);
+        $this->setEncoding($options['encoding']);
+        $this->setEnclosingMode($options['enclosing_mode']);
         $this->setLineEndings($options['eol']);
         $this->setEscape($options['escape']);
+        $this->setEscapeDouble($options['escape_double']);
         $this->setTranslit($options['translit']);
         $this->setUseBom($options['bom']);
         $this->setTrim($options['trim']);
@@ -244,7 +269,53 @@ class Dialect
 
         return $this;
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getEnclosingMode()
+    {
+        return $this->enclosingMode;
+    }
 
+    /**
+     * 
+     * @param string $enclosingMode
+     * @return \Spyrit\LightCsv\Dialect
+     */
+    public function setEnclosingMode($enclosingMode)
+    {
+        $this->enclosingMode = in_array($enclosingMode, array(
+            static::ENCLOSING_ALL,
+            static::ENCLOSING_MINIMAL,
+            static::ENCLOSING_NONNUMERIC,
+        )) ? $enclosingMode : static::ENCLOSING_MINIMAL;
+        
+        return $this;
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function getEscapeDouble()
+    {
+        return $this->escapeDouble;
+    }
+
+    /**
+     * 
+     * @param bool $escapeDouble
+     * @return \Spyrit\LightCsv\Dialect
+     */
+    public function setEscapeDouble($escapeDouble)
+    {
+        $this->escapeDouble = (bool) $escapeDouble;
+        return $this;
+    }
+
+        
     /**
      *
      * @param  string                       $escape

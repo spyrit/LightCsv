@@ -4,7 +4,7 @@ namespace Spyrit\LightCsv\Tests\Csv;
 
 use Doctrine\Common\Inflector\Inflector;
 use Spyrit\LightCsv\Dialect;
-use Spyrit\LightCsv\Tests\Test\AbstractCsvTestCase;
+use Spyrit\LightCsv\Tests\AbstractCsvTestCase;
 
 /**
  * DialectTest
@@ -107,6 +107,7 @@ class DialectTest extends AbstractCsvTestCase
                     'encoding' => 'CP1252', 
                     'line_endings' => "\r\n", 
                     'escape' => "\\", 
+                    'escape_double' => true, 
                     'use_bom' => false, 
                     'translit' => 'translit',
                     'force_encoding_detect' => false,
@@ -122,6 +123,7 @@ class DialectTest extends AbstractCsvTestCase
                     'encoding' => 'UTF-8', 
                     'line_endings' => "\n", 
                     'escape' => "\\", 
+                    'escape_double' => true, 
                     'use_bom' => false, 
                     'translit' => 'translit',
                     'force_encoding_detect' => false,
@@ -149,8 +151,10 @@ class DialectTest extends AbstractCsvTestCase
                     'delimiter' => ';', 
                     'enclosure' => '"', 
                     'encoding' => 'CP1252', 
+                    'enclosing_mode' => 'minimal',
                     'eol' => "\r\n", 
                     'escape' => "\\", 
+                    'escape_double' => true, 
                     'bom' => false, 
                     'translit' => 'translit',
                     'force_encoding_detect' => false,
@@ -164,8 +168,10 @@ class DialectTest extends AbstractCsvTestCase
                     'delimiter' => ',', 
                     'enclosure' => '"', 
                     'encoding' => 'UTF-8', 
+                    'enclosing_mode' => 'minimal',
                     'eol' => "\n", 
                     'escape' => "\\", 
+                    'escape_double' => true, 
                     'bom' => false, 
                     'translit' => 'translit',
                     'force_encoding_detect' => false,
@@ -237,7 +243,49 @@ class DialectTest extends AbstractCsvTestCase
             array('\'', '\''),
         );
     }
+    
+    /**
+     * @dataProvider providerGetSetEnclosingMode
+     */
+    public function testGetSetEnclosingMode($input, $expected)
+    {
+        $this->assertInstanceOf('Spyrit\LightCsv\Dialect', $this->dialect->setEnclosingMode($input));
+        $this->assertEquals($expected, $this->dialect->getEnclosingMode());
+    }
 
+    public function providerGetSetEnclosingMode()
+    {
+        return array(
+            array(null, Dialect::ENCLOSING_MINIMAL),
+            array('a', Dialect::ENCLOSING_MINIMAL),
+            array(1, Dialect::ENCLOSING_MINIMAL),
+            array(Dialect::ENCLOSING_MINIMAL, Dialect::ENCLOSING_MINIMAL),
+            array(Dialect::ENCLOSING_ALL, Dialect::ENCLOSING_ALL),
+            array(Dialect::ENCLOSING_NONNUMERIC, Dialect::ENCLOSING_NONNUMERIC),
+        );
+    }
+
+    /**
+     * @dataProvider providerGetSetEscapeDouble
+     */
+    public function testGetSetEscapeDouble($input, $expected)
+    {
+        $this->assertInstanceOf('Spyrit\LightCsv\Dialect', $this->dialect->setEscapeDouble($input));
+        $this->assertEquals($expected, $this->dialect->getEscapeDouble());
+    }
+
+    public function providerGetSetEscapeDouble()
+    {
+        return array(
+            array(null, false),
+            array(0, false),
+            array('', false),
+            array(false, false),
+            array(1, true),
+            array(true, true),
+        );
+    }
+    
     /**
      * @dataProvider providerGetSetEscape
      */

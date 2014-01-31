@@ -26,7 +26,14 @@ $watch = new Stopwatch();
 
 $faker = Factory::create('fr_FR');
 
-$csvWriter1 = new CsvWriter(';', '"', 'CP1252', "\r\n", '\\');
+$csvWriter1 = new CsvWriter(array(
+    'delimiter' => ';', 
+    'enclosure' => '"', 
+    'encoding' => 'CP1252', 
+    'eol' => "\r\n", 
+    'escape' => "\\", 
+));
+        
 $csvWriter1->open($file1);
 
 $watch->start('csv_generation');
@@ -70,10 +77,22 @@ echo 'Converting the CSV'."\n\n";
 $file2 = $dir.'/bench_result'.$maxLines.'.csv';
 $watch->start('csv_convert');
 
-$csvReader = new CsvReader(';', '"', 'CP1252', "\r\n", '\\');
+$csvReader = new CsvReader(array(
+    'delimiter' => ';', 
+    'enclosure' => '"', 
+    'encoding' => 'CP1252', 
+    'eol' => "\r\n", 
+    'escape' => "\\", 
+));
 $csvReader->open($file1);
 
-$csvWriter2 = new CsvWriter(',', '"', 'UTF-8', "\n", '\\');
+$csvWriter2 = new CsvWriter(array(
+    'delimiter' => ',', 
+    'enclosure' => '"', 
+    'encoding' => 'UTF-8', 
+    'eol' => "\n", 
+    'escape' => "\\", 
+));
 $csvWriter2->open($file2);
 
 foreach ($csvReader as $row) {
