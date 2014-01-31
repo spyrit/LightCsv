@@ -90,12 +90,14 @@ class CsvWriter extends AbstractCsv
      */
     protected function write($fileHandler, $values)
     {
+        $delimiter = $this->dialect->getDelimiter();
         $enclosure = $this->dialect->getEnclosure();
+        $eol = $this->dialect->getLineEndings();
         $escape = $this->dialect->getEscape();
         $trim = $this->dialect->getTrim();
         $enclosingMode = $this->dialect->getEnclosingMode();
         $escapeDouble = $this->dialect->getEscapeDouble();
-        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($enclosure, $escape, $trim, $enclosingMode, $escapeDouble) {
+        $line = implode($this->dialect->getDelimiter(), array_map(function($var) use ($delimiter, $enclosure, $eol, $escape, $trim, $enclosingMode, $escapeDouble) {
             // Escape enclosures and enclosed string
             if ($escapeDouble) {
                 // double enclosure
@@ -110,7 +112,7 @@ class CsvWriter extends AbstractCsv
             
             if (
                 $enclosingMode === Dialect::ENCLOSING_ALL || 
-                ($enclosingMode === Dialect::ENCLOSING_MINIMAL && preg_match('/['.preg_quote($this->dialect->getEnclosure().$this->dialect->getDelimiter().$this->dialect->getLineEndings(), '/').']+/', $clean)) ||
+                ($enclosingMode === Dialect::ENCLOSING_MINIMAL && preg_match('/['.preg_quote($enclosure.$delimiter.$eol, '/').']+/', $clean)) ||
                 ($enclosingMode === Dialect::ENCLOSING_NONNUMERIC && preg_match('/[^\d\.]+/', $clean)) 
             )
             {
