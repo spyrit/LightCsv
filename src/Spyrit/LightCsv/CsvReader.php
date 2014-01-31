@@ -46,6 +46,8 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
      * - skip_empty : (default = false)  remove lines with empty values
      * - trim : (default = false) trim each values on each line
      * 
+     * N.B. : Be careful, the options 'force_encoding_detect', 'skip_empty' and 'trim' decrease significantly the performances
+     * 
      * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())
@@ -74,7 +76,14 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     {
         $this->detectedEncoding = $this->dialect->getEncoding();
         if ($this->dialect->getForceEncodingDetect() || empty($this->dialect->detectedEncoding)) {
-            $text = file_get_contents($this->getFilename());
+            //only read the 100 first lines to detect encoding to improve performance
+            $text = '';
+            $line = 0;
+            while(!feof($this->getFileHandler()) && $line <= 100) {
+                $text .= fgets($this->getFileHandler());
+                $line++;
+            }
+            
             if ($text !== false) {
                 $this->detectedEncoding = Converter::detectEncoding($text, $this->dialect->getEncoding());
             }
@@ -131,8 +140,9 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
     }
 
     /**
-     *
-     * @return array
+     * return the current row and go to the next row
+     * 
+     * @return array|false
      */
     public function getRow()
     {
@@ -145,6 +155,29 @@ class CsvReader extends AbstractCsv implements \Iterator, \Countable
             return false;
         }
     }
+
+    /**
+     * get All rows as an array 
+     * 
+     * N.B.: Be careful, this method can consume a lot of memories on large CSV files.
+     * 
+     * You should prefer iterate over the reader instead.
+     * 
+     * @return array all rows in the CSV files
+     */
+    public function getRows()
+    {
+        $rows = array();
+        $this->rewind();
+        
+        while($this->valid()) {
+            $rows[] = $this->current();
+            $this->next();
+        }
+        
+        return $rows;
+    }
+
 
     /**
      * reset CSV reading to 1st line

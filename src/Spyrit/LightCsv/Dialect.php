@@ -129,6 +129,8 @@ class Dialect
      * - skip_empty : (default = false)  remove lines with empty values
      * - trim : (default = false) trim each values on each line
      * 
+     * N.B. : Be careful, the options 'force_encoding_detect', 'skip_empty' and 'trim' decrease significantly the performances
+     * 
      * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())

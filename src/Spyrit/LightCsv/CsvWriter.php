@@ -25,6 +25,8 @@ class CsvWriter extends AbstractCsv
      * - translit : (default = 'translit')  iconv translit option possible values : 'translit', 'ignore', null
      * - trim : (default = false) trim each values on each line
      * 
+     * N.B. : Be careful, the option 'trim' decrease significantly the performances
+     * 
      * @param array $options Dialect Options to describe CSV file parameters
      */
     public function __construct($options = array())
@@ -147,7 +149,7 @@ class CsvWriter extends AbstractCsv
     /**
      * write CSV rows from a PHP arrays
      *
-     * @param array rows
+     * @param array rows (multiple arrays of values)
      *
      * @return \Spyrit\LightCsv\CsvWriter
      */

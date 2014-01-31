@@ -48,6 +48,7 @@ Instanciate a new CSVReader with the following CSV parameters:
 * skip empty lines (default for Excel = false ) lines which all values are empty
 * trim (default = false for Excel) trim all values
 
+
 ```php
 use Spyrit\LightCsv\CsvReader;
 
@@ -132,6 +133,8 @@ $writer->close();
 ### Configuration : Dialect class
 
 Instead of giving directly an array to the CsvReader or CsvWriter constructor, you can create a Dialect object, use setter methods to change parameters and pass it to the CsvReader (or CsvWriter) :
+
+*Be careful, the options 'force_encoding_detect', 'skip_empty' and 'trim' decrease significantly the performances*
 
 ```php
 use Spyrit\LightCsv\Dialect;
